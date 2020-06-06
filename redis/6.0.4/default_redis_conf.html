@@ -1,0 +1,2105 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>redis.conf</title>
+	</head>
+	<style>
+		html {
+			font-size: 625%;
+		}
+
+		html body {
+			font-size: 0.2rem;
+		}
+
+		html body .container .anotation {
+			border: 1px dashed gray;
+			padding: 0.06rem;
+			background-color: lightgray;
+		}
+
+		html body .container .anotation p {
+			margin: 0;
+		}
+
+		html body .container code {
+			display: block;
+			font-size: 0.4rem;
+		}
+	</style>
+	<body>
+		<div class="container">
+			<div class="anotation">
+				<p># Redis configuration file example. </p>
+				<p># </p>
+				<p># Note that in order to read the configuration file, Redis must be </p>
+				<p># started with the file path as first argument: </p>
+				<p># </p>
+				<p># ./redis-server /path/to/redis.conf </p>
+				<p> </p>
+				<p># Note on units: when memory size is needed, it is possible to specify </p>
+				<p># it in the usual form of 1k 5GB 4M and so forth: </p>
+				<p># </p>
+				<p># 1k => 1000 bytes </p>
+				<p># 1kb => 1024 bytes </p>
+				<p># 1m => 1000000 bytes </p>
+				<p># 1mb => 1024*1024 bytes </p>
+				<p># 1g => 1000000000 bytes </p>
+				<p># 1gb => 1024*1024*1024 bytes </p>
+				<p># </p>
+				<p># units are case insensitive so 1GB 1Gb 1gB are all the same. </p>
+				<p> </p>
+				<p>################################## INCLUDES ################################### </p>
+				<p> </p>
+				<p># Include one or more other config files here. This is useful if you </p>
+				<p># have a standard template that goes to all Redis servers but also need </p>
+				<p># to customize a few per-server settings. Include files can include </p>
+				<p># other files, so use this wisely. </p>
+				<p># </p>
+				<p># Notice option "include" won't be rewritten by command "CONFIG REWRITE" </p>
+				<p># from admin or Redis Sentinel. Since Redis always uses the last processed </p>
+				<p># line as value of a configuration directive, you'd better put includes </p>
+				<p># at the beginning of this file to avoid overwriting config change at runtime. </p>
+				<p># </p>
+				<p># If instead you are interested in using includes to override configuration </p>
+				<p># options, it is better to use include as the last line. </p>
+				<p># </p>
+			</div>
+			<code># include /path/to/local.conf </code>
+			<code># include /path/to/other.conf </code>
+			<div class="anotation">
+				<p> </p>
+				<p>################################## MODULES ##################################### </p>
+				<p> </p>
+				<p># Load modules at startup. If the server is not able to load modules </p>
+				<p># it will abort. It is possible to use multiple loadmodule directives. </p>
+				<p># </p>
+			</div>
+			<code># loadmodule /path/to/my_module.so </code>
+			<code># loadmodule /path/to/other_module.so </code>
+			<div class="anotation">
+				<p> </p>
+				<p>################################## NETWORK ##################################### </p>
+				<p> </p>
+				<p># By default, if no "bind" configuration directive is specified, Redis listens </p>
+				<p># for connections from all the network interfaces available on the server. </p>
+				<p># It is possible to listen to just one or multiple selected interfaces using </p>
+				<p># the "bind" configuration directive, followed by one or more IP addresses. </p>
+				<p># </p>
+				<p># Examples: </p>
+				<p># </p>
+				<p># bind 192.168.1.100 10.0.0.1 </p>
+				<p># bind 127.0.0.1 ::1 </p>
+				<p># </p>
+				<p># ~~~ WARNING ~~~ If the computer running Redis is directly exposed to the </p>
+				<p># internet, binding to all the interfaces is dangerous and will expose the </p>
+				<p># instance to everybody on the internet. So by default we uncomment the </p>
+				<p># following bind directive, that will force Redis to listen only into </p>
+				<p># the IPv4 loopback interface address (this means Redis will be able to </p>
+				<p># accept connections only from clients running into the same computer it </p>
+				<p># is running). </p>
+				<p># </p>
+				<p># IF YOU ARE SURE YOU WANT YOUR INSTANCE TO LISTEN TO ALL THE INTERFACES </p>
+				<p># JUST COMMENT THE FOLLOWING LINE. </p>
+				<p># ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ </p>
+			</div>
+			<code>bind 127.0.0.1 </code>
+			<div class="anotation">
+				<p> </p>
+				<p># Protected mode is a layer of security protection, in order to avoid that </p>
+				<p># Redis instances left open on the internet are accessed and exploited. </p>
+				<p># </p>
+				<p># When protected mode is on and if: </p>
+				<p># </p>
+				<p># 1) The server is not binding explicitly to a set of addresses using the </p>
+				<p># "bind" directive. </p>
+				<p># 2) No password is configured. </p>
+				<p># </p>
+				<p># The server only accepts connections from clients connecting from the </p>
+				<p># IPv4 and IPv6 loopback addresses 127.0.0.1 and ::1, and from Unix domain </p>
+				<p># sockets. </p>
+				<p># </p>
+				<p># By default protected mode is enabled. You should disable it only if </p>
+				<p># you are sure you want clients from other hosts to connect to Redis </p>
+				<p># even if no authentication is configured, nor a specific set of interfaces </p>
+				<p># are explicitly listed using the "bind" directive. </p>
+			</div>
+			<code>protected-mode yes </code>
+			<div class="anotation">
+				<p> </p>
+				<p># Accept connections on the specified port, default is 6379 (IANA #815344). </p>
+				<p># If port 0 is specified Redis will not listen on a TCP socket. </p>
+			</div>
+			<code>port 6379 </code>
+			<div class="anotation">
+				<p> </p>
+				<p># TCP listen() backlog. </p>
+				<p># </p>
+				<p># In high requests-per-second environments you need an high backlog in order </p>
+				<p># to avoid slow clients connections issues. Note that the Linux kernel </p>
+				<p># will silently truncate it to the value of /proc/sys/net/core/somaxconn so </p>
+				<p># make sure to raise both the value of somaxconn and tcp_max_syn_backlog </p>
+				<p># in order to get the desired effect. </p>
+			</div>
+			<code>tcp-backlog 511 </code>
+			<div class="anotation">
+				<p> </p>
+				<p># Unix socket. </p>
+				<p># </p>
+				<p># Specify the path for the Unix socket that will be used to listen for </p>
+				<p># incoming connections. There is no default, so Redis will not listen </p>
+				<p># on a unix socket when not specified. </p>
+				<p># </p>
+			</div>
+			<code># unixsocket /tmp/redis.sock </code>
+			<code># unixsocketperm 700 </code>
+			<div class="anotation">
+				<p> </p>
+				<p># Close the connection after a client is idle for N seconds (0 to disable) </p>
+			</div>
+			<code>timeout 0 </code>
+			<div class="anotation">
+				<p> </p>
+				<p># TCP keepalive. </p>
+				<p># </p>
+				<p># If non-zero, use SO_KEEPALIVE to send TCP ACKs to clients in absence </p>
+				<p># of communication. This is useful for two reasons: </p>
+				<p># </p>
+				<p># 1) Detect dead peers. </p>
+				<p># 2) Take the connection alive from the point of view of network </p>
+				<p># equipment in the middle. </p>
+				<p># </p>
+				<p># On Linux, the specified value (in seconds) is the period used to send ACKs. </p>
+				<p># Note that to close the connection the double of the time is needed. </p>
+				<p># On other kernels the period depends on the kernel configuration. </p>
+				<p># </p>
+				<p># A reasonable value for this option is 300 seconds, which is the new </p>
+				<p># Redis default starting with Redis 3.2.1. </p>
+			</div>
+			<code>tcp-keepalive 300 </code>
+			<div class="anotation">
+				<p> </p>
+				<p>################################# TLS/SSL ##################################### </p>
+				<p> </p>
+				<p># By default, TLS/SSL is disabled. To enable it, the "tls-port" configuration </p>
+				<p># directive can be used to define TLS-listening ports. To enable TLS on the </p>
+				<p># default port, use: </p>
+				<p># </p>
+			</div>
+			<code># port 0 </code>
+			<code># tls-port 6379 </code>
+			<div class="anotation">
+				<p> </p>
+				<p># Configure a X.509 certificate and private key to use for authenticating the </p>
+				<p># server to connected clients, masters or cluster peers. These files should be </p>
+				<p># PEM formatted. </p>
+				<p># </p>
+			</div>
+			<code># tls-cert-file redis.crt </code>
+			<code># tls-key-file redis.key </code>
+			<div class="anotation">
+				<p> </p>
+				<p># Configure a DH parameters file to enable Diffie-Hellman (DH) key exchange: </p>
+				<p># </p>
+			</div>
+			<code># tls-dh-params-file redis.dh </code>
+			<div class="anotation">
+				<p> </p>
+				<p># Configure a CA certificate(s) bundle or directory to authenticate TLS/SSL </p>
+				<p># clients and peers. Redis requires an explicit configuration of at least one </p>
+				<p># of these, and will not implicitly use the system wide configuration. </p>
+				<p># </p>
+			</div>
+			<code># tls-ca-cert-file ca.crt </code>
+			<code># tls-ca-cert-dir /etc/ssl/certs </code>
+			<div class="anotation">
+				<p> </p>
+				<p># By default, clients (including replica servers) on a TLS port are required </p>
+				<p># to authenticate using valid client side certificates. </p>
+				<p># </p>
+				<p># It is possible to disable authentication using this directive. </p>
+				<p># </p>
+			</div>
+			<code># tls-auth-clients no </code>
+			<div class="anotation">
+				<p> </p>
+				<p># By default, a Redis replica does not attempt to establish a TLS connection </p>
+				<p># with its master. </p>
+				<p># </p>
+				<p># Use the following directive to enable TLS on replication links. </p>
+				<p># </p>
+			</div>
+			<code># tls-replication yes </code>
+			<div class="anotation">
+				<p> </p>
+				<p># By default, the Redis Cluster bus uses a plain TCP connection. To enable </p>
+				<p># TLS for the bus protocol, use the following directive: </p>
+				<p># </p>
+			</div>
+			<code># tls-cluster yes </code>
+			<div class="anotation">
+				<p> </p>
+				<p># Explicitly specify TLS versions to support. Allowed values are case insensitive </p>
+				<p># and include "TLSv1", "TLSv1.1", "TLSv1.2", "TLSv1.3" (OpenSSL >= 1.1.1) or </p>
+				<p># any combination. To enable only TLSv1.2 and TLSv1.3, use: </p>
+				<p># </p>
+			</div>
+			<code># tls-protocols "TLSv1.2 TLSv1.3" </code>
+			<div class="anotation">
+				<p> </p>
+				<p># Configure allowed ciphers. See the ciphers(1ssl) manpage for more information </p>
+				<p># about the syntax of this string. </p>
+				<p># </p>
+				<p># Note: this configuration applies only to <= TLSv1.2. </p> <p># </p>
+			</div>
+			<code># tls-ciphers DEFAULT:!MEDIUM </code>
+			<div class="anotation">
+				<p> </p>
+				<p># Configure allowed TLSv1.3 ciphersuites. See the ciphers(1ssl) manpage for more </p>
+				<p># information about the syntax of this string, and specifically for TLSv1.3 </p>
+				<p># ciphersuites. </p>
+				<p># </p>
+			</div>
+			<code># tls-ciphersuites TLS_CHACHA20_POLY1305_SHA256 </code>
+			<div class="anotation">
+				<p> </p>
+				<p># When choosing a cipher, use the server's preference instead of the client </p>
+				<p># preference. By default, the server follows the client's preference. </p>
+				<p># </p>
+			</div>
+			<code># tls-prefer-server-ciphers yes </code>
+			<div class="anotation">
+				<p> </p>
+				<p>################################# GENERAL ##################################### </p>
+				<p> </p>
+				<p># By default Redis does not run as a daemon. Use 'yes' if you need it. </p>
+				<p># Note that Redis will write a pid file in /var/run/redis.pid when daemonized. </p>
+			</div>
+			<code>daemonize no </code>
+			<div class="anotation">
+				<p> </p>
+				<p># If you run Redis from upstart or systemd, Redis can interact with your </p>
+				<p># supervision tree. Options: </p>
+				<p># supervised no - no supervision interaction </p>
+				<p># supervised upstart - signal upstart by putting Redis into SIGSTOP mode </p>
+				<p># supervised systemd - signal systemd by writing READY=1 to $NOTIFY_SOCKET </p>
+				<p># supervised auto - detect upstart or systemd method based on </p>
+				<p># UPSTART_JOB or NOTIFY_SOCKET environment variables </p>
+				<p># Note: these supervision methods only signal "process is ready." </p>
+				<p># They do not enable continuous liveness pings back to your supervisor. </p>
+			</div>
+			<code>supervised no </code>
+			<div class="anotation">
+				<p> </p>
+				<p># If a pid file is specified, Redis writes it where specified at startup </p>
+				<p># and removes it at exit. </p>
+				<p># </p>
+				<p># When the server runs non daemonized, no pid file is created if none is </p>
+				<p># specified in the configuration. When the server is daemonized, the pid file </p>
+				<p># is used even if not specified, defaulting to "/var/run/redis.pid". </p>
+				<p># </p>
+				<p># Creating a pid file is best effort: if Redis is not able to create it </p>
+				<p># nothing bad happens, the server will start and run normally. </p>
+			</div>
+			<code>pidfile /var/run/redis_6379.pid </code>
+			<div class="anotation">
+				<p> </p>
+				<p># Specify the server verbosity level. </p>
+				<p># This can be one of: </p>
+				<p># debug (a lot of information, useful for development/testing) </p>
+				<p># verbose (many rarely useful info, but not a mess like the debug level) </p>
+				<p># notice (moderately verbose, what you want in production probably) </p>
+				<p># warning (only very important / critical messages are logged) </p>
+			</div>
+			<code>loglevel notice </code>
+			<div class="anotation">
+				<p> </p>
+				<p># Specify the log file name. Also the empty string can be used to force </p>
+				<p># Redis to log on the standard output. Note that if you use standard </p>
+				<p># output for logging but daemonize, logs will be sent to /dev/null </p>
+			</div>
+			<code>logfile "" </code>
+			<div class="anotation">
+				<p> </p>
+				<p># To enable logging to the system logger, just set 'syslog-enabled' to yes, </p>
+				<p># and optionally update the other syslog parameters to suit your needs. </p>
+			</div>
+			<code># syslog-enabled no </code>
+			<div class="anotation">
+				<p> </p>
+				<p># Specify the syslog identity. </p>
+			</div>
+			<code># syslog-ident redis </code>
+			<div class="anotation">
+				<p> </p>
+				<p># Specify the syslog facility. Must be USER or between LOCAL0-LOCAL7. </p>
+			</div>
+			<code># syslog-facility local0 </code>
+			<div class="anotation">
+				<p> </p>
+				<p># Set the number of databases. The default database is DB 0, you can select </p>
+				<p># a different one on a per-connection basis using SELECT <dbid> where </p>
+				<p># dbid is a number between 0 and 'databases'-1 </p>
+			</div>
+			<code>databases 16 </code>
+			<div class="anotation">
+				<p> </p>
+				<p># By default Redis shows an ASCII art logo only when started to log to the </p>
+				<p># standard output and if the standard output is a TTY. Basically this means </p>
+				<p># that normally a logo is displayed only in interactive sessions. </p>
+				<p># </p>
+				<p># However it is possible to force the pre-4.0 behavior and always show a </p>
+				<p># ASCII art logo in startup logs by setting the following option to yes. </p>
+			</div>
+			<code>always-show-logo yes </code>
+			<div class="anotation">
+				<p> </p>
+				<p>################################ SNAPSHOTTING ################################ </p>
+				<p># </p>
+				<p># Save the DB on disk: </p>
+				<p># </p>
+				<p># save <seconds>
+						<changes>
+				</p>
+				<p># </p>
+				<p># Will save the DB if both the given number of seconds and the given </p>
+				<p># number of write operations against the DB occurred. </p>
+				<p># </p>
+				<p># In the example below the behaviour will be to save: </p>
+				<p># after 900 sec (15 min) if at least 1 key changed </p>
+				<p># after 300 sec (5 min) if at least 10 keys changed </p>
+				<p># after 60 sec if at least 10000 keys changed </p>
+				<p># </p>
+				<p># Note: you can disable saving completely by commenting out all "save" lines. </p>
+				<p># </p>
+				<p># It is also possible to remove all the previously configured save </p>
+				<p># points by adding a save directive with a single empty string argument </p>
+				<p># like in the following example: </p>
+				<p># </p>
+				<p># save "" </p>
+				<p> </p>
+			</div>
+			<code>save 900 1 </code>
+			<code>save 300 10 </code>
+			<code>save 60 10000 </code>
+			<div class="anotation">
+				<p> </p>
+				<p># By default Redis will stop accepting writes if RDB snapshots are enabled </p>
+				<p># (at least one save point) and the latest background save failed. </p>
+				<p># This will make the user aware (in a hard way) that data is not persisting </p>
+				<p># on disk properly, otherwise chances are that no one will notice and some </p>
+				<p># disaster will happen. </p>
+				<p># </p>
+				<p># If the background saving process will start working again Redis will </p>
+				<p># automatically allow writes again. </p>
+				<p># </p>
+				<p># However if you have setup your proper monitoring of the Redis server </p>
+				<p># and persistence, you may want to disable this feature so that Redis will </p>
+				<p># continue to work as usual even if there are problems with disk, </p>
+				<p># permissions, and so forth. </p>
+			</div>
+			<code>stop-writes-on-bgsave-error yes </code>
+			<div class="anotation">
+				<p> </p>
+				<p># Compress string objects using LZF when dump .rdb databases? </p>
+				<p># For default that's set to 'yes' as it's almost always a win. </p>
+				<p># If you want to save some CPU in the saving child set it to 'no' but </p>
+				<p># the dataset will likely be bigger if you have compressible values or keys. </p>
+			</div>
+			<code>rdbcompression yes </code>
+			<div class="anotation">
+				<p> </p>
+				<p># Since version 5 of RDB a CRC64 checksum is placed at the end of the file. </p>
+				<p># This makes the format more resistant to corruption but there is a performance </p>
+				<p># hit to pay (around 10%) when saving and loading RDB files, so you can disable it </p>
+				<p># for maximum performances. </p>
+				<p># </p>
+				<p># RDB files created with checksum disabled have a checksum of zero that will </p>
+				<p># tell the loading code to skip the check. </p>
+			</div>
+			<code>rdbchecksum yes </code>
+			<div class="anotation">
+				<p> </p>
+				<p># The filename where to dump the DB </p>
+			</div>
+			<code>dbfilename dump.rdb </code>
+			<div class="anotation">
+				<p> </p>
+				<p># Remove RDB files used by replication in instances without persistence </p>
+				<p># enabled. By default this option is disabled, however there are environments </p>
+				<p># where for regulations or other security concerns, RDB files persisted on </p>
+				<p># disk by masters in order to feed replicas, or stored on disk by replicas </p>
+				<p># in order to load them for the initial synchronization, should be deleted </p>
+				<p># ASAP. Note that this option ONLY WORKS in instances that have both AOF </p>
+				<p># and RDB persistence disabled, otherwise is completely ignored. </p>
+				<p># </p>
+				<p># An alternative (and sometimes better) way to obtain the same effect is </p>
+				<p># to use diskless replication on both master and replicas instances. However </p>
+				<p># in the case of replicas, diskless is not always an option. </p>
+			</div>
+			<code>rdb-del-sync-files no </code>
+			<div class="anotation">
+				<p> </p>
+				<p># The working directory. </p>
+				<p># </p>
+				<p># The DB will be written inside this directory, with the filename specified </p>
+				<p># above using the 'dbfilename' configuration directive. </p>
+				<p># </p>
+				<p># The Append Only File will also be created inside this directory. </p>
+				<p># </p>
+				<p># Note that you must specify a directory here, not a file name. </p>
+			</div>
+			<code>dir ./ </code>
+			<div class="anotation">
+				<p> </p>
+				<p>################################# REPLICATION ################################# </p>
+				<p> </p>
+				<p># Master-Replica replication. Use replicaof to make a Redis instance a copy of </p>
+				<p># another Redis server. A few things to understand ASAP about Redis replication. </p>
+				<p># </p>
+				<p># +------------------+ +---------------+ </p>
+				<p># | Master | ---> | Replica | </p>
+				<p># | (receive writes) | | (exact copy) | </p>
+				<p># +------------------+ +---------------+ </p>
+				<p># </p>
+				<p># 1) Redis replication is asynchronous, but you can configure a master to </p>
+				<p># stop accepting writes if it appears to be not connected with at least </p>
+				<p># a given number of replicas. </p>
+				<p># 2) Redis replicas are able to perform a partial resynchronization with the </p>
+				<p># master if the replication link is lost for a relatively small amount of </p>
+				<p># time. You may want to configure the replication backlog size (see the next </p>
+				<p># sections of this file) with a sensible value depending on your needs. </p>
+				<p># 3) Replication is automatic and does not need user intervention. After a </p>
+				<p># network partition replicas automatically try to reconnect to masters </p>
+				<p># and resynchronize with them. </p>
+				<p># </p>
+			</div>
+			<code># replicaof <masterip>
+					<masterport> </code>
+			<div class="anotation">
+				<p> </p>
+				<p># If the master is password protected (using the "requirepass" configuration </p>
+				<p># directive below) it is possible to tell the replica to authenticate before </p>
+				<p># starting the replication synchronization process, otherwise the master will </p>
+				<p># refuse the replica request. </p>
+				<p># </p>
+			</div>
+			<code># masterauth <master-password> </code>
+			<div class="anotation">
+				<p># </p>
+				<p># However this is not enough if you are using Redis ACLs (for Redis version </p>
+				<p># 6 or greater), and the default user is not capable of running the PSYNC </p>
+				<p># command and/or other commands needed for replication. In this case it's </p>
+				<p># better to configure a special user to use with replication, and specify the </p>
+				<p># masteruser configuration as such: </p>
+				<p># </p>
+			</div>
+			<code># masteruser <username> </code>
+			<div class="anotation">
+				<p># </p>
+				<p># When masteruser is specified, the replica will authenticate against its </p>
+				<p># master using the new AUTH form: AUTH <username>
+						<password>. </p>
+				<p> </p>
+				<p># When a replica loses its connection with the master, or when the replication </p>
+				<p># is still in progress, the replica can act in two different ways: </p>
+				<p># </p>
+				<p># 1) if replica-serve-stale-data is set to 'yes' (the default) the replica will </p>
+				<p># still reply to client requests, possibly with out of date data, or the </p>
+				<p># data set may just be empty if this is the first synchronization. </p>
+				<p># </p>
+				<p># 2) if replica-serve-stale-data is set to 'no' the replica will reply with </p>
+				<p># an error "SYNC with master in progress" to all the kind of commands </p>
+				<p># but to INFO, replicaOF, AUTH, PING, SHUTDOWN, REPLCONF, ROLE, CONFIG, </p>
+				<p># SUBSCRIBE, UNSUBSCRIBE, PSUBSCRIBE, PUNSUBSCRIBE, PUBLISH, PUBSUB, </p>
+				<p># COMMAND, POST, HOST: and LATENCY. </p>
+				<p># </p>
+			</div>
+			<code>replica-serve-stale-data yes </code>
+			<div class="anotation">
+				<p> </p>
+				<p># You can configure a replica instance to accept writes or not. Writing against </p>
+				<p># a replica instance may be useful to store some ephemeral data (because data </p>
+				<p># written on a replica will be easily deleted after resync with the master) but </p>
+				<p># may also cause problems if clients are writing to it because of a </p>
+				<p># misconfiguration. </p>
+				<p># </p>
+				<p># Since Redis 2.6 by default replicas are read-only. </p>
+				<p># </p>
+				<p># Note: read only replicas are not designed to be exposed to untrusted clients </p>
+				<p># on the internet. It's just a protection layer against misuse of the instance. </p>
+				<p># Still a read only replica exports by default all the administrative commands </p>
+				<p># such as CONFIG, DEBUG, and so forth. To a limited extent you can improve </p>
+				<p># security of read only replicas using 'rename-command' to shadow all the </p>
+				<p># administrative / dangerous commands. </p>
+			</div>
+			<code>replica-read-only yes </code>
+			<div class="anotation">
+				<p> </p>
+				<p># Replication SYNC strategy: disk or socket. </p>
+				<p># </p>
+				<p># New replicas and reconnecting replicas that are not able to continue the </p>
+				<p># replication process just receiving differences, need to do what is called a </p>
+				<p># "full synchronization". An RDB file is transmitted from the master to the </p>
+				<p># replicas. </p>
+				<p># </p>
+				<p># The transmission can happen in two different ways: </p>
+				<p># </p>
+				<p># 1) Disk-backed: The Redis master creates a new process that writes the RDB </p>
+				<p># file on disk. Later the file is transferred by the parent </p>
+				<p># process to the replicas incrementally. </p>
+				<p># 2) Diskless: The Redis master creates a new process that directly writes the </p>
+				<p># RDB file to replica sockets, without touching the disk at all. </p>
+				<p># </p>
+				<p># With disk-backed replication, while the RDB file is generated, more replicas </p>
+				<p># can be queued and served with the RDB file as soon as the current child </p>
+				<p># producing the RDB file finishes its work. With diskless replication instead </p>
+				<p># once the transfer starts, new replicas arriving will be queued and a new </p>
+				<p># transfer will start when the current one terminates. </p>
+				<p># </p>
+				<p># When diskless replication is used, the master waits a configurable amount of </p>
+				<p># time (in seconds) before starting the transfer in the hope that multiple </p>
+				<p># replicas will arrive and the transfer can be parallelized. </p>
+				<p># </p>
+				<p># With slow disks and fast (large bandwidth) networks, diskless replication </p>
+				<p># works better. </p>
+			</div>
+			<code>repl-diskless-sync no </code>
+			<div class="anotation">
+				<p> </p>
+				<p># When diskless replication is enabled, it is possible to configure the delay </p>
+				<p># the server waits in order to spawn the child that transfers the RDB via socket </p>
+				<p># to the replicas. </p>
+				<p># </p>
+				<p># This is important since once the transfer starts, it is not possible to serve </p>
+				<p># new replicas arriving, that will be queued for the next RDB transfer, so the </p>
+				<p># server waits a delay in order to let more replicas arrive. </p>
+				<p># </p>
+				<p># The delay is specified in seconds, and by default is 5 seconds. To disable </p>
+				<p># it entirely just set it to 0 seconds and the transfer will start ASAP. </p>
+			</div>
+			<code>repl-diskless-sync-delay 5 </code>
+			<div class="anotation">
+				<p> </p>
+				<p># ----------------------------------------------------------------------------- </p>
+				<p># WARNING: RDB diskless load is experimental. Since in this setup the replica </p>
+				<p># does not immediately store an RDB on disk, it may cause data loss during </p>
+				<p># failovers. RDB diskless load + Redis modules not handling I/O reads may also </p>
+				<p># cause Redis to abort in case of I/O errors during the initial synchronization </p>
+				<p># stage with the master. Use only if your do what you are doing. </p>
+				<p># ----------------------------------------------------------------------------- </p>
+				<p># </p>
+				<p># Replica can load the RDB it reads from the replication link directly from the </p>
+				<p># socket, or store the RDB to a file and read that file after it was completely </p>
+				<p># recived from the master. </p>
+				<p># </p>
+				<p># In many cases the disk is slower than the network, and storing and loading </p>
+				<p># the RDB file may increase replication time (and even increase the master's </p>
+				<p># Copy on Write memory and salve buffers). </p>
+				<p># However, parsing the RDB file directly from the socket may mean that we have </p>
+				<p># to flush the contents of the current database before the full rdb was </p>
+				<p># received. For this reason we have the following options: </p>
+				<p># </p>
+				<p># "disabled" - Don't use diskless load (store the rdb file to the disk first) </p>
+				<p># "on-empty-db" - Use diskless load only when it is completely safe. </p>
+				<p># "swapdb" - Keep a copy of the current db contents in RAM while parsing </p>
+				<p># the data directly from the socket. note that this requires </p>
+				<p># sufficient memory, if you don't have it, you risk an OOM kill. </p>
+			</div>
+			<code>repl-diskless-load disabled </code>
+			<div class="anotation">
+				<p> </p>
+				<p># Replicas send PINGs to server in a predefined interval. It's possible to </p>
+				<p># change this interval with the repl_ping_replica_period option. The default </p>
+				<p># value is 10 seconds. </p>
+				<p># </p>
+			</div>
+			<code># repl-ping-replica-period 10 </code>
+			<div class="anotation">
+				<p> </p>
+				<p># The following option sets the replication timeout for: </p>
+				<p># </p>
+				<p># 1) Bulk transfer I/O during SYNC, from the point of view of replica. </p>
+				<p># 2) Master timeout from the point of view of replicas (data, pings). </p>
+				<p># 3) Replica timeout from the point of view of masters (REPLCONF ACK pings). </p>
+				<p># </p>
+				<p># It is important to make sure that this value is greater than the value </p>
+				<p># specified for repl-ping-replica-period otherwise a timeout will be detected </p>
+				<p># every time there is low traffic between the master and the replica. </p>
+				<p># </p>
+			</div>
+			<code># repl-timeout 60 </code>
+			<div class="anotation">
+				<p> </p>
+				<p># Disable TCP_NODELAY on the replica socket after SYNC? </p>
+				<p># </p>
+				<p># If you select "yes" Redis will use a smaller number of TCP packets and </p>
+				<p># less bandwidth to send data to replicas. But this can add a delay for </p>
+				<p># the data to appear on the replica side, up to 40 milliseconds with </p>
+				<p># Linux kernels using a default configuration. </p>
+				<p># </p>
+				<p># If you select "no" the delay for data to appear on the replica side will </p>
+				<p># be reduced but more bandwidth will be used for replication. </p>
+				<p># </p>
+				<p># By default we optimize for low latency, but in very high traffic conditions </p>
+				<p># or when the master and replicas are many hops away, turning this to "yes" may </p>
+				<p># be a good idea. </p>
+			</div>
+			<code>repl-disable-tcp-nodelay no </code>
+			<div class="anotation">
+				<p> </p>
+				<p># Set the replication backlog size. The backlog is a buffer that accumulates </p>
+				<p># replica data when replicas are disconnected for some time, so that when a </p>
+				<p># replica wants to reconnect again, often a full resync is not needed, but a </p>
+				<p># partial resync is enough, just passing the portion of data the replica </p>
+				<p># missed while disconnected. </p>
+				<p># </p>
+				<p># The bigger the replication backlog, the longer the time the replica can be </p>
+				<p># disconnected and later be able to perform a partial resynchronization. </p>
+				<p># </p>
+				<p># The backlog is only allocated once there is at least a replica connected. </p>
+				<p># </p>
+			</div>
+			<code># repl-backlog-size 1mb </code>
+			<div class="anotation">
+				<p> </p>
+				<p># After a master has no longer connected replicas for some time, the backlog </p>
+				<p># will be freed. The following option configures the amount of seconds that </p>
+				<p># need to elapse, starting from the time the last replica disconnected, for </p>
+				<p># the backlog buffer to be freed. </p>
+				<p># </p>
+				<p># Note that replicas never free the backlog for timeout, since they may be </p>
+				<p># promoted to masters later, and should be able to correctly "partially </p>
+				<p># resynchronize" with the replicas: hence they should always accumulate backlog. </p>
+				<p># </p>
+				<p># A value of 0 means to never release the backlog. </p>
+				<p># </p>
+			</div>
+			<code># repl-backlog-ttl 3600 </code>
+			<div class="anotation">
+				<p> </p>
+				<p># The replica priority is an integer number published by Redis in the INFO </p>
+				<p># output. It is used by Redis Sentinel in order to select a replica to promote </p>
+				<p># into a master if the master is no longer working correctly. </p>
+				<p># </p>
+				<p># A replica with a low priority number is considered better for promotion, so </p>
+				<p># for instance if there are three replicas with priority 10, 100, 25 Sentinel </p>
+				<p># will pick the one with priority 10, that is the lowest. </p>
+				<p># </p>
+				<p># However a special priority of 0 marks the replica as not able to perform the </p>
+				<p># role of master, so a replica with priority of 0 will never be selected by </p>
+				<p># Redis Sentinel for promotion. </p>
+				<p># </p>
+				<p># By default the priority is 100. </p>
+			</div>
+			<code>replica-priority 100 </code>
+			<div class="anotation">
+				<p> </p>
+				<p># It is possible for a master to stop accepting writes if there are less than </p>
+				<p># N replicas connected, having a lag less or equal than M seconds. </p>
+				<p># </p>
+				<p># The N replicas need to be in "online" state. </p>
+				<p># </p>
+				<p># The lag in seconds, that must be <= the specified value, is calculated from </p> <p># the last ping received
+						from the replica, that is usually sent every second. </p>
+				<p># </p>
+				<p># This option does not GUARANTEE that N replicas will accept the write, but </p>
+				<p># will limit the window of exposure for lost writes in case not enough replicas </p>
+				<p># are available, to the specified number of seconds. </p>
+				<p># </p>
+				<p># For example to require at least 3 replicas with a lag <= 10 seconds use: </p> <p># </p>
+			</div>
+			<code># min-replicas-to-write 3 </code>
+			<code># min-replicas-max-lag 10 </code>
+			<div class="anotation">
+				<p># </p>
+				<p># Setting one or the other to 0 disables the feature. </p>
+				<p># </p>
+				<p># By default min-replicas-to-write is set to 0 (feature disabled) and </p>
+				<p># min-replicas-max-lag is set to 10. </p>
+				<p> </p>
+				<p># A Redis master is able to list the address and port of the attached </p>
+				<p># replicas in different ways. For example the "INFO replication" section </p>
+				<p># offers this information, which is used, among other tools, by </p>
+				<p># Redis Sentinel in order to discover replica instances. </p>
+				<p># Another place where this info is available is in the output of the </p>
+				<p># "ROLE" command of a master. </p>
+				<p># </p>
+				<p># The listed IP and address normally reported by a replica is obtained </p>
+				<p># in the following way: </p>
+				<p># </p>
+				<p># IP: The address is auto detected by checking the peer address </p>
+				<p># of the socket used by the replica to connect with the master. </p>
+				<p># </p>
+				<p># Port: The port is communicated by the replica during the replication </p>
+				<p># handshake, and is normally the port that the replica is using to </p>
+				<p># listen for connections. </p>
+				<p># </p>
+				<p># However when port forwarding or Network Address Translation (NAT) is </p>
+				<p># used, the replica may be actually reachable via different IP and port </p>
+				<p># pairs. The following two options can be used by a replica in order to </p>
+				<p># report to its master a specific set of IP and port, so that both INFO </p>
+				<p># and ROLE will report those values. </p>
+				<p># </p>
+				<p># There is no need to use both the options if you need to override just </p>
+				<p># the port or the IP address. </p>
+				<p># </p>
+			</div>
+			<code># replica-announce-ip 5.5.5.5 </code>
+			<code># replica-announce-port 1234 </code>
+			<div class="anotation">
+				<p> </p>
+				<p>############################### KEYS TRACKING ################################# </p>
+				<p> </p>
+				<p># Redis implements server assisted support for client side caching of values. </p>
+				<p># This is implemented using an invalidation table that remembers, using </p>
+				<p># 16 millions of slots, what clients may have certain subsets of keys. In turn </p>
+				<p># this is used in order to send invalidation messages to clients. Please </p>
+				<p># to understand more about the feature check this page: </p>
+				<p># </p>
+				<p># https://redis.io/topics/client-side-caching </p>
+				<p># </p>
+				<p># When tracking is enabled for a client, all the read only queries are assumed </p>
+				<p># to be cached: this will force Redis to store information in the invalidation </p>
+				<p># table. When keys are modified, such information is flushed away, and </p>
+				<p># invalidation messages are sent to the clients. However if the workload is </p>
+				<p># heavily dominated by reads, Redis could use more and more memory in order </p>
+				<p># to track the keys fetched by many clients. </p>
+				<p># </p>
+				<p># For this reason it is possible to configure a maximum fill value for the </p>
+				<p># invalidation table. By default it is set to 1M of keys, and once this limit </p>
+				<p># is reached, Redis will start to evict keys in the invalidation table </p>
+				<p># even if they were not modified, just to reclaim memory: this will in turn </p>
+				<p># force the clients to invalidate the cached values. Basically the table </p>
+				<p># maximum size is a trade off between the memory you want to spend server </p>
+				<p># side to track information about who cached what, and the ability of clients </p>
+				<p># to retain cached objects in memory. </p>
+				<p># </p>
+				<p># If you set the value to 0, it means there are no limits, and Redis will </p>
+				<p># retain as many keys as needed in the invalidation table. </p>
+				<p># In the "stats" INFO section, you can find information about the number of </p>
+				<p># keys in the invalidation table at every given moment. </p>
+				<p># </p>
+				<p># Note: when key tracking is used in broadcasting mode, no memory is used </p>
+				<p># in the server side so this setting is useless. </p>
+				<p># </p>
+			</div>
+			<code># tracking-table-max-keys 1000000 </code>
+			<div class="anotation">
+				<p> </p>
+				<p>################################## SECURITY ################################### </p>
+				<p> </p>
+				<p># Warning: since Redis is pretty fast an outside user can try up to </p>
+				<p># 1 million passwords per second against a modern box. This means that you </p>
+				<p># should use very strong passwords, otherwise they will be very easy to break. </p>
+				<p># Note that because the password is really a shared secret between the client </p>
+				<p># and the server, and should not be memorized by any human, the password </p>
+				<p># can be easily a long string from /dev/urandom or whatever, so by using a </p>
+				<p># long and unguessable password no brute force attack will be possible. </p>
+				<p> </p>
+				<p># Redis ACL users are defined in the following format: </p>
+				<p># </p>
+				<p># user <username> ... acl rules ... </p>
+				<p># </p>
+				<p># For example: </p>
+				<p># </p>
+				<p># user worker +@list +@connection ~jobs:* on >ffa9203c493aa99 </p>
+				<p># </p>
+				<p># The special username "default" is used for new connections. If this user </p>
+				<p># has the "nopass" rule, then new connections will be immediately authenticated </p>
+				<p># as the "default" user without the need of any password provided via the </p>
+				<p># AUTH command. Otherwise if the "default" user is not flagged with "nopass" </p>
+				<p># the connections will start in not authenticated state, and will require </p>
+				<p># AUTH (or the HELLO command AUTH option) in order to be authenticated and </p>
+				<p># start to work. </p>
+				<p># </p>
+				<p># The ACL rules that describe what an user can do are the following: </p>
+				<p># </p>
+				<p># on Enable the user: it is possible to authenticate as this user. </p>
+				<p># off Disable the user: it's no longer possible to authenticate </p>
+				<p># with this user, however the already authenticated connections </p>
+				<p># will still work. </p>
+				<p># +<command> Allow the execution of that command </p>
+				<p># -<command> Disallow the execution of that command </p>
+				<p># +@<category> Allow the execution of all the commands in such category </p>
+				<p># with valid categories are like @admin, @set, @sortedset, ... </p>
+				<p># and so forth, see the full list in the server.c file where </p>
+				<p># the Redis command table is described and defined. </p>
+				<p># The special category @all means all the commands, but currently </p>
+				<p># present in the server, and that will be loaded in the future </p>
+				<p># via modules. </p>
+				<p># +<command>|subcommand Allow a specific subcommand of an otherwise </p>
+				<p># disabled command. Note that this form is not </p>
+				<p># allowed as negative like -DEBUG|SEGFAULT, but </p>
+				<p># only additive starting with "+". </p>
+				<p># allcommands Alias for +@all. Note that it implies the ability to execute </p>
+				<p># all the future commands loaded via the modules system. </p>
+				<p># nocommands Alias for -@all. </p>
+				<p># ~<pattern> Add a pattern of keys that can be mentioned as part of </p>
+				<p># commands. For instance ~* allows all the keys. The pattern </p>
+				<p># is a glob-style pattern like the one of KEYS. </p>
+				<p># It is possible to specify multiple patterns. </p>
+				<p># allkeys Alias for ~* </p>
+				<p># resetkeys Flush the list of allowed keys patterns. </p>
+				<p># ><password> Add this passowrd to the list of valid password for the user. </p>
+				<p># For example >mypass will add "mypass" to the list. </p>
+				<p># This directive clears the "nopass" flag (see later). </p>
+				<p># <<password> Remove this password from the list of valid passwords. </p>
+				<p># nopass All the set passwords of the user are removed, and the user </p>
+				<p># is flagged as requiring no password: it means that every </p>
+				<p># password will work against this user. If this directive is </p>
+				<p># used for the default user, every new connection will be </p>
+				<p># immediately authenticated with the default user without </p>
+				<p># any explicit AUTH command required. Note that the "resetpass" </p>
+				<p># directive will clear this condition. </p>
+				<p># resetpass Flush the list of allowed passwords. Moreover removes the </p>
+				<p># "nopass" status. After "resetpass" the user has no associated </p>
+				<p># passwords and there is no way to authenticate without adding </p>
+				<p># some password (or setting it as "nopass" later). </p>
+				<p># reset Performs the following actions: resetpass, resetkeys, off, </p>
+				<p># -@all. The user returns to the same state it has immediately </p>
+				<p># after its creation. </p>
+				<p># </p>
+				<p># ACL rules can be specified in any order: for instance you can start with </p>
+				<p># passwords, then flags, or key patterns. However note that the additive </p>
+				<p># and subtractive rules will CHANGE MEANING depending on the ordering. </p>
+				<p># For instance see the following example: </p>
+				<p># </p>
+				<p># user alice on +@all -DEBUG ~* >somepassword </p>
+				<p># </p>
+				<p># This will allow "alice" to use all the commands with the exception of the </p>
+				<p># DEBUG command, since +@all added all the commands to the set of the commands </p>
+				<p># alice can use, and later DEBUG was removed. However if we invert the order </p>
+				<p># of two ACL rules the result will be different: </p>
+				<p># </p>
+				<p># user alice on -DEBUG +@all ~* >somepassword </p>
+				<p># </p>
+				<p># Now DEBUG was removed when alice had yet no commands in the set of allowed </p>
+				<p># commands, later all the commands are added, so the user will be able to </p>
+				<p># execute everything. </p>
+				<p># </p>
+				<p># Basically ACL rules are processed left-to-right. </p>
+				<p># </p>
+				<p># For more information about ACL configuration please refer to </p>
+				<p># the Redis web site at https://redis.io/topics/acl </p>
+				<p> </p>
+				<p># ACL LOG </p>
+				<p># </p>
+				<p># The ACL Log tracks failed commands and authentication events associated </p>
+				<p># with ACLs. The ACL Log is useful to troubleshoot failed commands blocked </p>
+				<p># by ACLs. The ACL Log is stored in and consumes memory. There is no limit </p>
+				<p># to its length.You can reclaim memory with ACL LOG RESET or set a maximum </p>
+				<p># length below. </p>
+			</div>
+			<code>acllog-max-len 128 </code>
+			<div class="anotation">
+				<p> </p>
+				<p># Using an external ACL file </p>
+				<p># </p>
+				<p># Instead of configuring users here in this file, it is possible to use </p>
+				<p># a stand-alone file just listing users. The two methods cannot be mixed: </p>
+				<p># if you configure users here and at the same time you activate the exteranl </p>
+				<p># ACL file, the server will refuse to start. </p>
+				<p># </p>
+				<p># The format of the external ACL user file is exactly the same as the </p>
+				<p># format that is used inside redis.conf to describe users. </p>
+				<p># </p>
+			</div>
+			<code># aclfile /etc/redis/users.acl </code>
+			<div class="anotation">
+				<p> </p>
+				<p># IMPORTANT NOTE: starting with Redis 6 "requirepass" is just a compatiblity </p>
+				<p># layer on top of the new ACL system. The option effect will be just setting </p>
+				<p># the password for the default user. Clients will still authenticate using </p>
+				<p># AUTH <password> as usually, or more explicitly with AUTH default <password>
+				</p>
+				<p># if they follow the new protocol: both will work. </p>
+				<p># </p>
+			</div>
+			<code># requirepass foobared </code>
+			<div class="anotation">
+				<p> </p>
+				<p># Command renaming (DEPRECATED). </p>
+				<p># </p>
+				<p># ------------------------------------------------------------------------ </p>
+				<p># WARNING: avoid using this option if possible. Instead use ACLs to remove </p>
+				<p># commands from the default user, and put them only in some admin user you </p>
+				<p># create for administrative purposes. </p>
+				<p># ------------------------------------------------------------------------ </p>
+				<p># </p>
+				<p># It is possible to change the name of dangerous commands in a shared </p>
+				<p># environment. For instance the CONFIG command may be renamed into something </p>
+				<p># hard to guess so that it will still be available for internal-use tools </p>
+				<p># but not available for general clients. </p>
+				<p># </p>
+				<p># Example: </p>
+				<p># </p>
+				<p># rename-command CONFIG b840fc02d524045429941cc15f59e41cb7be6c52 </p>
+				<p># </p>
+				<p># It is also possible to completely kill a command by renaming it into </p>
+				<p># an empty string: </p>
+				<p># </p>
+				<p># rename-command CONFIG "" </p>
+				<p># </p>
+				<p># Please note that changing the name of commands that are logged into the </p>
+				<p># AOF file or transmitted to replicas may cause problems. </p>
+				<p> </p>
+				<p>################################### CLIENTS #################################### </p>
+				<p> </p>
+				<p># Set the max number of connected clients at the same time. By default </p>
+				<p># this limit is set to 10000 clients, however if the Redis server is not </p>
+				<p># able to configure the process file limit to allow for the specified limit </p>
+				<p># the max number of allowed clients is set to the current file limit </p>
+				<p># minus 32 (as Redis reserves a few file descriptors for internal uses). </p>
+				<p># </p>
+				<p># Once the limit is reached Redis will close all the new connections sending </p>
+				<p># an error 'max number of clients reached'. </p>
+				<p># </p>
+			</div>
+			<code># maxclients 10000 </code>
+			<div class="anotation">
+				<p> </p>
+				<p>############################## MEMORY MANAGEMENT ################################ </p>
+				<p> </p>
+				<p># Set a memory usage limit to the specified amount of bytes. </p>
+				<p># When the memory limit is reached Redis will try to remove keys </p>
+				<p># according to the eviction policy selected (see maxmemory-policy). </p>
+				<p># </p>
+				<p># If Redis can't remove keys according to the policy, or if the policy is </p>
+				<p># set to 'noeviction', Redis will start to reply with errors to commands </p>
+				<p># that would use more memory, like SET, LPUSH, and so on, and will continue </p>
+				<p># to reply to read-only commands like GET. </p>
+				<p># </p>
+				<p># This option is usually useful when using Redis as an LRU or LFU cache, or to </p>
+				<p># set a hard memory limit for an instance (using the 'noeviction' policy). </p>
+				<p># </p>
+				<p># WARNING: If you have replicas attached to an instance with maxmemory on, </p>
+				<p># the size of the output buffers needed to feed the replicas are subtracted </p>
+				<p># from the used memory count, so that network problems / resyncs will </p>
+				<p># not trigger a loop where keys are evicted, and in turn the output </p>
+				<p># buffer of replicas is full with DELs of keys evicted triggering the deletion </p>
+				<p># of more keys, and so forth until the database is completely emptied. </p>
+				<p># </p>
+				<p># In short... if you have replicas attached it is suggested that you set a lower </p>
+				<p># limit for maxmemory so that there is some free RAM on the system for replica </p>
+				<p># output buffers (but this is not needed if the policy is 'noeviction'). </p>
+				<p># </p>
+			</div>
+			<code># maxmemory <bytes> </code>
+			<div class="anotation">
+				<p> </p>
+				<p># MAXMEMORY POLICY: how Redis will select what to remove when maxmemory </p>
+				<p># is reached. You can select one from the following behaviors: </p>
+				<p># </p>
+				<p># volatile-lru -> Evict using approximated LRU, only keys with an expire set. </p>
+				<p># allkeys-lru -> Evict any key using approximated LRU. </p>
+				<p># volatile-lfu -> Evict using approximated LFU, only keys with an expire set. </p>
+				<p># allkeys-lfu -> Evict any key using approximated LFU. </p>
+				<p># volatile-random -> Remove a random key having an expire set. </p>
+				<p># allkeys-random -> Remove a random key, any key. </p>
+				<p># volatile-ttl -> Remove the key with the nearest expire time (minor TTL) </p>
+				<p># noeviction -> Don't evict anything, just return an error on write operations. </p>
+				<p># </p>
+				<p># LRU means Least Recently Used </p>
+				<p># LFU means Least Frequently Used </p>
+				<p># </p>
+				<p># Both LRU, LFU and volatile-ttl are implemented using approximated </p>
+				<p># randomized algorithms. </p>
+				<p># </p>
+				<p># Note: with any of the above policies, Redis will return an error on write </p>
+				<p># operations, when there are no suitable keys for eviction. </p>
+				<p># </p>
+				<p># At the date of writing these commands are: set setnx setex append </p>
+				<p># incr decr rpush lpush rpushx lpushx linsert lset rpoplpush sadd </p>
+				<p># sinter sinterstore sunion sunionstore sdiff sdiffstore zadd zincrby </p>
+				<p># zunionstore zinterstore hset hsetnx hmset hincrby incrby decrby </p>
+				<p># getset mset msetnx exec sort </p>
+				<p># </p>
+				<p># The default is: </p>
+				<p># </p>
+			</div>
+			<code># maxmemory-policy noeviction </code>
+			<div class="anotation">
+				<p> </p>
+				<p># LRU, LFU and minimal TTL algorithms are not precise algorithms but approximated </p>
+				<p># algorithms (in order to save memory), so you can tune it for speed or </p>
+				<p># accuracy. For default Redis will check five keys and pick the one that was </p>
+				<p># used less recently, you can change the sample size using the following </p>
+				<p># configuration directive. </p>
+				<p># </p>
+				<p># The default of 5 produces good enough results. 10 Approximates very closely </p>
+				<p># true LRU but costs more CPU. 3 is faster but not very accurate. </p>
+				<p># </p>
+			</div>
+			<code># maxmemory-samples 5 </code>
+			<div class="anotation">
+				<p> </p>
+				<p># Starting from Redis 5, by default a replica will ignore its maxmemory setting </p>
+				<p># (unless it is promoted to master after a failover or manually). It means </p>
+				<p># that the eviction of keys will be just handled by the master, sending the </p>
+				<p># DEL commands to the replica as keys evict in the master side. </p>
+				<p># </p>
+				<p># This behavior ensures that masters and replicas stay consistent, and is usually </p>
+				<p># what you want, however if your replica is writable, or you want the replica </p>
+				<p># to have a different memory setting, and you are sure all the writes performed </p>
+				<p># to the replica are idempotent, then you may change this default (but be sure </p>
+				<p># to understand what you are doing). </p>
+				<p># </p>
+				<p># Note that since the replica by default does not evict, it may end using more </p>
+				<p># memory than the one set via maxmemory (there are certain buffers that may </p>
+				<p># be larger on the replica, or data structures may sometimes take more memory </p>
+				<p># and so forth). So make sure you monitor your replicas and make sure they </p>
+				<p># have enough memory to never hit a real out-of-memory condition before the </p>
+				<p># master hits the configured maxmemory setting. </p>
+				<p># </p>
+			</div>
+			<code># replica-ignore-maxmemory yes </code>
+			<div class="anotation">
+				<p> </p>
+				<p># Redis reclaims expired keys in two ways: upon access when those keys are </p>
+				<p># found to be expired, and also in background, in what is called the </p>
+				<p># "active expire key". The key space is slowly and interactively scanned </p>
+				<p># looking for expired keys to reclaim, so that it is possible to free memory </p>
+				<p># of keys that are expired and will never be accessed again in a short time. </p>
+				<p># </p>
+				<p># The default effort of the expire cycle will try to avoid having more than </p>
+				<p># ten percent of expired keys still in memory, and will try to avoid consuming </p>
+				<p># more than 25% of total memory and to add latency to the system. However </p>
+				<p># it is possible to increase the expire "effort" that is normally set to </p>
+				<p># "1", to a greater value, up to the value "10". At its maximum value the </p>
+				<p># system will use more CPU, longer cycles (and technically may introduce </p>
+				<p># more latency), and will tollerate less already expired keys still present </p>
+				<p># in the system. It's a tradeoff betweeen memory, CPU and latecy. </p>
+				<p># </p>
+			</div>
+			<code># active-expire-effort 1 </code>
+			<div class="anotation">
+				<p> </p>
+				<p>############################# LAZY FREEING #################################### </p>
+				<p> </p>
+				<p># Redis has two primitives to delete keys. One is called DEL and is a blocking </p>
+				<p># deletion of the object. It means that the server stops processing new commands </p>
+				<p># in order to reclaim all the memory associated with an object in a synchronous </p>
+				<p># way. If the key deleted is associated with a small object, the time needed </p>
+				<p># in order to execute the DEL command is very small and comparable to most other </p>
+				<p># O(1) or O(log_N) commands in Redis. However if the key is associated with an </p>
+				<p># aggregated value containing millions of elements, the server can block for </p>
+				<p># a long time (even seconds) in order to complete the operation. </p>
+				<p># </p>
+				<p># For the above reasons Redis also offers non blocking deletion primitives </p>
+				<p># such as UNLINK (non blocking DEL) and the ASYNC option of FLUSHALL and </p>
+				<p># FLUSHDB commands, in order to reclaim memory in background. Those commands </p>
+				<p># are executed in constant time. Another thread will incrementally free the </p>
+				<p># object in the background as fast as possible. </p>
+				<p># </p>
+				<p># DEL, UNLINK and ASYNC option of FLUSHALL and FLUSHDB are user-controlled. </p>
+				<p># It's up to the design of the application to understand when it is a good </p>
+				<p># idea to use one or the other. However the Redis server sometimes has to </p>
+				<p># delete keys or flush the whole database as a side effect of other operations. </p>
+				<p># Specifically Redis deletes objects independently of a user call in the </p>
+				<p># following scenarios: </p>
+				<p># </p>
+				<p># 1) On eviction, because of the maxmemory and maxmemory policy configurations, </p>
+				<p># in order to make room for new data, without going over the specified </p>
+				<p># memory limit. </p>
+				<p># 2) Because of expire: when a key with an associated time to live (see the </p>
+				<p># EXPIRE command) must be deleted from memory. </p>
+				<p># 3) Because of a side effect of a command that stores data on a key that may </p>
+				<p># already exist. For example the RENAME command may delete the old key </p>
+				<p># content when it is replaced with another one. Similarly SUNIONSTORE </p>
+				<p># or SORT with STORE option may delete existing keys. The SET command </p>
+				<p># itself removes any old content of the specified key in order to replace </p>
+				<p># it with the specified string. </p>
+				<p># 4) During replication, when a replica performs a full resynchronization with </p>
+				<p># its master, the content of the whole database is removed in order to </p>
+				<p># load the RDB file just transferred. </p>
+				<p># </p>
+				<p># In all the above cases the default is to delete objects in a blocking way, </p>
+				<p># like if DEL was called. However you can configure each case specifically </p>
+				<p># in order to instead release memory in a non-blocking way like if UNLINK </p>
+				<p># was called, using the following configuration directives. </p>
+				<p> </p>
+			</div>
+			<code>lazyfree-lazy-eviction no </code>
+			<code>lazyfree-lazy-expire no </code>
+			<code>lazyfree-lazy-server-del no </code>
+			<code>replica-lazy-flush no </code>
+			<div class="anotation">
+				<p> </p>
+				<p># It is also possible, for the case when to replace the user code DEL calls </p>
+				<p># with UNLINK calls is not easy, to modify the default behavior of the DEL </p>
+				<p># command to act exactly like UNLINK, using the following configuration </p>
+				<p># directive: </p>
+				<p> </p>
+			</div>
+			<code>lazyfree-lazy-user-del no </code>
+			<div class="anotation">
+				<p> </p>
+				<p>################################ THREADED I/O ################################# </p>
+				<p> </p>
+				<p># Redis is mostly single threaded, however there are certain threaded </p>
+				<p># operations such as UNLINK, slow I/O accesses and other things that are </p>
+				<p># performed on side threads. </p>
+				<p># </p>
+				<p># Now it is also possible to handle Redis clients socket reads and writes </p>
+				<p># in different I/O threads. Since especially writing is so slow, normally </p>
+				<p># Redis users use pipelining in order to speedup the Redis performances per </p>
+				<p># core, and spawn multiple instances in order to scale more. Using I/O </p>
+				<p># threads it is possible to easily speedup two times Redis without resorting </p>
+				<p># to pipelining nor sharding of the instance. </p>
+				<p># </p>
+				<p># By default threading is disabled, we suggest enabling it only in machines </p>
+				<p># that have at least 4 or more cores, leaving at least one spare core. </p>
+				<p># Using more than 8 threads is unlikely to help much. We also recommend using </p>
+				<p># threaded I/O only if you actually have performance problems, with Redis </p>
+				<p># instances being able to use a quite big percentage of CPU time, otherwise </p>
+				<p># there is no point in using this feature. </p>
+				<p># </p>
+				<p># So for instance if you have a four cores boxes, try to use 2 or 3 I/O </p>
+				<p># threads, if you have a 8 cores, try to use 6 threads. In order to </p>
+				<p># enable I/O threads use the following configuration directive: </p>
+				<p># </p>
+			</div>
+			<code># io-threads 4 </code>
+			<div class="anotation">
+				<p># </p>
+				<p># Setting io-threads to 1 will just use the main thread as usually. </p>
+				<p># When I/O threads are enabled, we only use threads for writes, that is </p>
+				<p># to thread the write(2) syscall and transfer the client buffers to the </p>
+				<p># socket. However it is also possible to enable threading of reads and </p>
+				<p># protocol parsing using the following configuration directive, by setting </p>
+				<p># it to yes: </p>
+				<p># </p>
+			</div>
+			<code># io-threads-do-reads no </code>
+			<div class="anotation">
+				<p># </p>
+				<p># Usually threading reads doesn't help much. </p>
+				<p># </p>
+				<p># NOTE 1: This configuration directive cannot be changed at runtime via </p>
+				<p># CONFIG SET. Aso this feature currently does not work when SSL is </p>
+				<p># enabled. </p>
+				<p># </p>
+				<p># NOTE 2: If you want to test the Redis speedup using redis-benchmark, make </p>
+				<p># sure you also run the benchmark itself in threaded mode, using the </p>
+				<p># --threads option to match the number of Redis theads, otherwise you'll not </p>
+				<p># be able to notice the improvements. </p>
+				<p> </p>
+				<p>############################## APPEND ONLY MODE ############################### </p>
+				<p> </p>
+				<p># By default Redis asynchronously dumps the dataset on disk. This mode is </p>
+				<p># good enough in many applications, but an issue with the Redis process or </p>
+				<p># a power outage may result into a few minutes of writes lost (depending on </p>
+				<p># the configured save points). </p>
+				<p># </p>
+				<p># The Append Only File is an alternative persistence mode that provides </p>
+				<p># much better durability. For instance using the default data fsync policy </p>
+				<p># (see later in the config file) Redis can lose just one second of writes in a </p>
+				<p># dramatic event like a server power outage, or a single write if something </p>
+				<p># wrong with the Redis process itself happens, but the operating system is </p>
+				<p># still running correctly. </p>
+				<p># </p>
+				<p># AOF and RDB persistence can be enabled at the same time without problems. </p>
+				<p># If the AOF is enabled on startup Redis will load the AOF, that is the file </p>
+				<p># with the better durability guarantees. </p>
+				<p># </p>
+				<p># Please check http://redis.io/topics/persistence for more information. </p>
+				<p> </p>
+			</div>
+			<code>appendonly no </code>
+			<div class="anotation">
+				<p> </p>
+				<p># The name of the append only file (default: "appendonly.aof") </p>
+				<p> </p>
+				<p>appendfilename "appendonly.aof" </p>
+				<p> </p>
+				<p># The fsync() call tells the Operating System to actually write data on disk </p>
+				<p># instead of waiting for more data in the output buffer. Some OS will really flush </p>
+				<p># data on disk, some other OS will just try to do it ASAP. </p>
+				<p># </p>
+				<p># Redis supports three different modes: </p>
+				<p># </p>
+				<p># no: don't fsync, just let the OS flush the data when it wants. Faster. </p>
+				<p># always: fsync after every write to the append only log. Slow, Safest. </p>
+				<p># everysec: fsync only one time every second. Compromise. </p>
+				<p># </p>
+				<p># The default is "everysec", as that's usually the right compromise between </p>
+				<p># speed and data safety. It's up to you to understand if you can relax this to </p>
+				<p># "no" that will let the operating system flush the output buffer when </p>
+				<p># it wants, for better performances (but if you can live with the idea of </p>
+				<p># some data loss consider the default persistence mode that's snapshotting), </p>
+				<p># or on the contrary, use "always" that's very slow but a bit safer than </p>
+				<p># everysec. </p>
+				<p># </p>
+				<p># More details please check the following article: </p>
+				<p># http://antirez.com/post/redis-persistence-demystified.html </p>
+				<p># </p>
+				<p># If unsure, use "everysec". </p>
+				<p> </p>
+			</div>
+			<code># appendfsync always </code>
+			<code>appendfsync everysec </code>
+			<code># appendfsync no </code>
+			<div class="anotation">
+				<p> </p>
+				<p># When the AOF fsync policy is set to always or everysec, and a background </p>
+				<p># saving process (a background save or AOF log background rewriting) is </p>
+				<p># performing a lot of I/O against the disk, in some Linux configurations </p>
+				<p># Redis may block too long on the fsync() call. Note that there is no fix for </p>
+				<p># this currently, as even performing fsync in a different thread will block </p>
+				<p># our synchronous write(2) call. </p>
+				<p># </p>
+				<p># In order to mitigate this problem it's possible to use the following option </p>
+				<p># that will prevent fsync() from being called in the main process while a </p>
+				<p># BGSAVE or BGREWRITEAOF is in progress. </p>
+				<p># </p>
+				<p># This means that while another child is saving, the durability of Redis is </p>
+				<p># the same as "appendfsync none". In practical terms, this means that it is </p>
+				<p># possible to lose up to 30 seconds of log in the worst scenario (with the </p>
+				<p># default Linux settings). </p>
+				<p># </p>
+				<p># If you have latency problems turn this to "yes". Otherwise leave it as </p>
+				<p># "no" that is the safest pick from the point of view of durability. </p>
+				<p> </p>
+			</div>
+			<code>no-appendfsync-on-rewrite no </code>
+			<div class="anotation">
+				<p> </p>
+				<p># Automatic rewrite of the append only file. </p>
+				<p># Redis is able to automatically rewrite the log file implicitly calling </p>
+				<p># BGREWRITEAOF when the AOF log size grows by the specified percentage. </p>
+				<p># </p>
+				<p># This is how it works: Redis remembers the size of the AOF file after the </p>
+				<p># latest rewrite (if no rewrite has happened since the restart, the size of </p>
+				<p># the AOF at startup is used). </p>
+				<p># </p>
+				<p># This base size is compared to the current size. If the current size is </p>
+				<p># bigger than the specified percentage, the rewrite is triggered. Also </p>
+				<p># you need to specify a minimal size for the AOF file to be rewritten, this </p>
+				<p># is useful to avoid rewriting the AOF file even if the percentage increase </p>
+				<p># is reached but it is still pretty small. </p>
+				<p># </p>
+				<p># Specify a percentage of zero in order to disable the automatic AOF </p>
+				<p># rewrite feature. </p>
+				<p> </p>
+			</div>
+			<code>auto-aof-rewrite-percentage 100 </code>
+			<code>auto-aof-rewrite-min-size 64mb </code>
+			<div class="anotation">
+				<p> </p>
+				<p># An AOF file may be found to be truncated at the end during the Redis </p>
+				<p># startup process, when the AOF data gets loaded back into memory. </p>
+				<p># This may happen when the system where Redis is running </p>
+				<p># crashes, especially when an ext4 filesystem is mounted without the </p>
+				<p># data=ordered option (however this can't happen when Redis itself </p>
+				<p># crashes or aborts but the operating system still works correctly). </p>
+				<p># </p>
+				<p># Redis can either exit with an error when this happens, or load as much </p>
+				<p># data as possible (the default now) and start if the AOF file is found </p>
+				<p># to be truncated at the end. The following option controls this behavior. </p>
+				<p># </p>
+				<p># If aof-load-truncated is set to yes, a truncated AOF file is loaded and </p>
+				<p># the Redis server starts emitting a log to inform the user of the event. </p>
+				<p># Otherwise if the option is set to no, the server aborts with an error </p>
+				<p># and refuses to start. When the option is set to no, the user requires </p>
+				<p># to fix the AOF file using the "redis-check-aof" utility before to restart </p>
+				<p># the server. </p>
+				<p># </p>
+				<p># Note that if the AOF file will be found to be corrupted in the middle </p>
+				<p># the server will still exit with an error. This option only applies when </p>
+				<p># Redis will try to read more data from the AOF file but not enough bytes </p>
+				<p># will be found. </p>
+				<p>aof-load-truncated yes </p>
+				<p> </p>
+				<p># When rewriting the AOF file, Redis is able to use an RDB preamble in the </p>
+				<p># AOF file for faster rewrites and recoveries. When this option is turned </p>
+				<p># on the rewritten AOF file is composed of two different stanzas: </p>
+				<p># </p>
+				<p># [RDB file][AOF tail] </p>
+				<p># </p>
+				<p># When loading Redis recognizes that the AOF file starts with the "REDIS" </p>
+				<p># string and loads the prefixed RDB file, and continues loading the AOF </p>
+				<p># tail. </p>
+			</div>
+			<code>aof-use-rdb-preamble yes </code>
+			<div class="anotation">
+				<p> </p>
+				<p>################################ LUA SCRIPTING ############################### </p>
+				<p> </p>
+				<p># Max execution time of a Lua script in milliseconds. </p>
+				<p># </p>
+				<p># If the maximum execution time is reached Redis will log that a script is </p>
+				<p># still in execution after the maximum allowed time and will start to </p>
+				<p># reply to queries with an error. </p>
+				<p># </p>
+				<p># When a long running script exceeds the maximum execution time only the </p>
+				<p># SCRIPT KILL and SHUTDOWN NOSAVE commands are available. The first can be </p>
+				<p># used to stop a script that did not yet called write commands. The second </p>
+				<p># is the only way to shut down the server in the case a write command was </p>
+				<p># already issued by the script but the user doesn't want to wait for the natural </p>
+				<p># termination of the script. </p>
+				<p># </p>
+				<p># Set it to 0 or a negative value for unlimited execution without warnings. </p>
+			</div>
+			<code>lua-time-limit 5000 </code>
+			<div class="anotation">
+				<p> </p>
+				<p>################################ REDIS CLUSTER ############################### </p>
+				<p> </p>
+				<p># Normal Redis instances can't be part of a Redis Cluster; only nodes that are </p>
+				<p># started as cluster nodes can. In order to start a Redis instance as a </p>
+				<p># cluster node enable the cluster support uncommenting the following: </p>
+				<p># </p>
+			</div>
+			<code># cluster-enabled yes </code>
+			<div class="anotation">
+				<p> </p>
+				<p># Every cluster node has a cluster configuration file. This file is not </p>
+				<p># intended to be edited by hand. It is created and updated by Redis nodes. </p>
+				<p># Every Redis Cluster node requires a different cluster configuration file. </p>
+				<p># Make sure that instances running in the same system do not have </p>
+				<p># overlapping cluster configuration file names. </p>
+				<p># </p>
+			</div>
+			<code># cluster-config-file nodes-6379.conf </code>
+			<div class="anotation">
+				<p> </p>
+				<p># Cluster node timeout is the amount of milliseconds a node must be unreachable </p>
+				<p># for it to be considered in failure state. </p>
+				<p># Most other internal time limits are multiple of the node timeout. </p>
+				<p># </p>
+			</div>
+			<code># cluster-node-timeout 15000 </code>
+			<div class="anotation">
+				<p> </p>
+				<p># A replica of a failing master will avoid to start a failover if its data </p>
+				<p># looks too old. </p>
+				<p># </p>
+				<p># There is no simple way for a replica to actually have an exact measure of </p>
+				<p># its "data age", so the following two checks are performed: </p>
+				<p># </p>
+				<p># 1) If there are multiple replicas able to failover, they exchange messages </p>
+				<p># in order to try to give an advantage to the replica with the best </p>
+				<p># replication offset (more data from the master processed). </p>
+				<p># Replicas will try to get their rank by offset, and apply to the start </p>
+				<p># of the failover a delay proportional to their rank. </p>
+				<p># </p>
+				<p># 2) Every single replica computes the time of the last interaction with </p>
+				<p># its master. This can be the last ping or command received (if the master </p>
+				<p># is still in the "connected" state), or the time that elapsed since the </p>
+				<p># disconnection with the master (if the replication link is currently down). </p>
+				<p># If the last interaction is too old, the replica will not try to failover </p>
+				<p># at all. </p>
+				<p># </p>
+				<p># The point "2" can be tuned by user. Specifically a replica will not perform </p>
+				<p># the failover if, since the last interaction with the master, the time </p>
+				<p># elapsed is greater than: </p>
+				<p># </p>
+				<p># (node-timeout * replica-validity-factor) + repl-ping-replica-period </p>
+				<p># </p>
+				<p># So for example if node-timeout is 30 seconds, and the replica-validity-factor </p>
+				<p># is 10, and assuming a default repl-ping-replica-period of 10 seconds, the </p>
+				<p># replica will not try to failover if it was not able to talk with the master </p>
+				<p># for longer than 310 seconds. </p>
+				<p># </p>
+				<p># A large replica-validity-factor may allow replicas with too old data to failover </p>
+				<p># a master, while a too small value may prevent the cluster from being able to </p>
+				<p># elect a replica at all. </p>
+				<p># </p>
+				<p># For maximum availability, it is possible to set the replica-validity-factor </p>
+				<p># to a value of 0, which means, that replicas will always try to failover the </p>
+				<p># master regardless of the last time they interacted with the master. </p>
+				<p># (However they'll always try to apply a delay proportional to their </p>
+				<p># offset rank). </p>
+				<p># </p>
+				<p># Zero is the only value able to guarantee that when all the partitions heal </p>
+				<p># the cluster will always be able to continue. </p>
+				<p># </p>
+				<p># cluster-replica-validity-factor 10 </p>
+				<p> </p>
+				<p># Cluster replicas are able to migrate to orphaned masters, that are masters </p>
+				<p># that are left without working replicas. This improves the cluster ability </p>
+				<p># to resist to failures as otherwise an orphaned master can't be failed over </p>
+				<p># in case of failure if it has no working replicas. </p>
+				<p># </p>
+				<p># Replicas migrate to orphaned masters only if there are still at least a </p>
+				<p># given number of other working replicas for their old master. This number </p>
+				<p># is the "migration barrier". A migration barrier of 1 means that a replica </p>
+				<p># will migrate only if there is at least 1 other working replica for its master </p>
+				<p># and so forth. It usually reflects the number of replicas you want for every </p>
+				<p># master in your cluster. </p>
+				<p># </p>
+				<p># Default is 1 (replicas migrate only if their masters remain with at least </p>
+				<p># one replica). To disable migration just set it to a very large value. </p>
+				<p># A value of 0 can be set but is useful only for debugging and dangerous </p>
+				<p># in production. </p>
+				<p># </p>
+			</div>
+			<code># cluster-migration-barrier 1 </code>
+			<div class="anotation">
+				<p> </p>
+				<p># By default Redis Cluster nodes stop accepting queries if they detect there </p>
+				<p># is at least an hash slot uncovered (no available node is serving it). </p>
+				<p># This way if the cluster is partially down (for example a range of hash slots </p>
+				<p># are no longer covered) all the cluster becomes, eventually, unavailable. </p>
+				<p># It automatically returns available as soon as all the slots are covered again. </p>
+				<p># </p>
+				<p># However sometimes you want the subset of the cluster which is working, </p>
+				<p># to continue to accept queries for the part of the key space that is still </p>
+				<p># covered. In order to do so, just set the cluster-require-full-coverage </p>
+				<p># option to no. </p>
+				<p># </p>
+			</div>
+			<code># cluster-require-full-coverage yes </code>
+			<div class="anotation">
+				<p> </p>
+				<p># This option, when set to yes, prevents replicas from trying to failover its </p>
+				<p># master during master failures. However the master can still perform a </p>
+				<p># manual failover, if forced to do so. </p>
+				<p># </p>
+				<p># This is useful in different scenarios, especially in the case of multiple </p>
+				<p># data center operations, where we want one side to never be promoted if not </p>
+				<p># in the case of a total DC failure. </p>
+				<p># </p>
+			</div>
+			<code># cluster-replica-no-failover no </code>
+			<div class="anotation">
+				<p> </p>
+				<p># This option, when set to yes, allows nodes to serve read traffic while the </p>
+				<p># the cluster is in a down state, as long as it believes it owns the slots. </p>
+				<p># </p>
+				<p># This is useful for two cases. The first case is for when an application </p>
+				<p># doesn't require consistency of data during node failures or network partitions. </p>
+				<p># One example of this is a cache, where as long as the node has the data it </p>
+				<p># should be able to serve it. </p>
+				<p># </p>
+				<p># The second use case is for configurations that don't meet the recommended </p>
+				<p># three shards but want to enable cluster mode and scale later. A </p>
+				<p># master outage in a 1 or 2 shard configuration causes a read/write outage to the </p>
+				<p># entire cluster without this option set, with it set there is only a write outage. </p>
+				<p># Without a quorum of masters, slot ownership will not change automatically. </p>
+				<p># </p>
+			</div>
+			<code># cluster-allow-reads-when-down no </code>
+			<div class="anotation">
+				<p> </p>
+				<p># In order to setup your cluster make sure to read the documentation </p>
+				<p># available at http://redis.io web site. </p>
+				<p> </p>
+				<p>########################## CLUSTER DOCKER/NAT support ######################## </p>
+				<p> </p>
+				<p># In certain deployments, Redis Cluster nodes address discovery fails, because </p>
+				<p># addresses are NAT-ted or because ports are forwarded (the typical case is </p>
+				<p># Docker and other containers). </p>
+				<p># </p>
+				<p># In order to make Redis Cluster working in such environments, a static </p>
+				<p># configuration where each node knows its public address is needed. The </p>
+				<p># following two options are used for this scope, and are: </p>
+				<p># </p>
+				<p># * cluster-announce-ip </p>
+				<p># * cluster-announce-port </p>
+				<p># * cluster-announce-bus-port </p>
+				<p># </p>
+				<p># Each instruct the node about its address, client port, and cluster message </p>
+				<p># bus port. The information is then published in the header of the bus packets </p>
+				<p># so that other nodes will be able to correctly map the address of the node </p>
+				<p># publishing the information. </p>
+				<p># </p>
+				<p># If the above options are not used, the normal Redis Cluster auto-detection </p>
+				<p># will be used instead. </p>
+				<p># </p>
+				<p># Note that when remapped, the bus port may not be at the fixed offset of </p>
+				<p># clients port + 10000, so you can specify any port and bus-port depending </p>
+				<p># on how they get remapped. If the bus-port is not set, a fixed offset of </p>
+				<p># 10000 will be used as usually. </p>
+				<p># </p>
+				<p># Example: </p>
+				<p># </p>
+			</div>
+			<code># cluster-announce-ip 10.1.1.5 </code>
+			<code># cluster-announce-port 6379 </code>
+			<code># cluster-announce-bus-port 6380 </code>
+			<div class="anotation">
+				<p> </p>
+				<p>################################## SLOW LOG ################################### </p>
+				<p> </p>
+				<p># The Redis Slow Log is a system to log queries that exceeded a specified </p>
+				<p># execution time. The execution time does not include the I/O operations </p>
+				<p># like talking with the client, sending the reply and so forth, </p>
+				<p># but just the time needed to actually execute the command (this is the only </p>
+				<p># stage of command execution where the thread is blocked and can not serve </p>
+				<p># other requests in the meantime). </p>
+				<p># </p>
+				<p># You can configure the slow log with two parameters: one tells Redis </p>
+				<p># what is the execution time, in microseconds, to exceed in order for the </p>
+				<p># command to get logged, and the other parameter is the length of the </p>
+				<p># slow log. When a new command is logged the oldest one is removed from the </p>
+				<p># queue of logged commands. </p>
+				<p> </p>
+				<p># The following time is expressed in microseconds, so 1000000 is equivalent </p>
+				<p># to one second. Note that a negative number disables the slow log, while </p>
+				<p># a value of zero forces the logging of every command. </p>
+				<p>slowlog-log-slower-than 10000 </p>
+				<p> </p>
+				<p># There is no limit to this length. Just be aware that it will consume memory. </p>
+				<p># You can reclaim memory used by the slow log with SLOWLOG RESET. </p>
+			</div>
+			<code>slowlog-max-len 128 </code>
+			<div class="anotation">
+				<p> </p>
+				<p>################################ LATENCY MONITOR ############################## </p>
+				<p> </p>
+				<p># The Redis latency monitoring subsystem samples different operations </p>
+				<p># at runtime in order to collect data related to possible sources of </p>
+				<p># latency of a Redis instance. </p>
+				<p># </p>
+				<p># Via the LATENCY command this information is available to the user that can </p>
+				<p># print graphs and obtain reports. </p>
+				<p># </p>
+				<p># The system only logs operations that were performed in a time equal or </p>
+				<p># greater than the amount of milliseconds specified via the </p>
+				<p># latency-monitor-threshold configuration directive. When its value is set </p>
+				<p># to zero, the latency monitor is turned off. </p>
+				<p># </p>
+				<p># By default latency monitoring is disabled since it is mostly not needed </p>
+				<p># if you don't have latency issues, and collecting data has a performance </p>
+				<p># impact, that while very small, can be measured under big load. Latency </p>
+				<p># monitoring can easily be enabled at runtime using the command </p>
+				<p># "CONFIG SET latency-monitor-threshold <milliseconds>" if needed. </p>
+			</div>
+			<code>latency-monitor-threshold 0 </code>
+			<div class="anotation">
+				<p> </p>
+				<p>############################# EVENT NOTIFICATION ############################## </p>
+				<p> </p>
+				<p># Redis can notify Pub/Sub clients about events happening in the key space. </p>
+				<p># This feature is documented at http://redis.io/topics/notifications </p>
+				<p># </p>
+				<p># For instance if keyspace events notification is enabled, and a client </p>
+				<p># performs a DEL operation on key "foo" stored in the Database 0, two </p>
+				<p># messages will be published via Pub/Sub: </p>
+				<p># </p>
+				<p># PUBLISH __keyspace@0__:foo del </p>
+				<p># PUBLISH __keyevent@0__:del foo </p>
+				<p># </p>
+				<p># It is possible to select the events that Redis will notify among a set </p>
+				<p># of classes. Every class is identified by a single character: </p>
+				<p># </p>
+				<p># K Keyspace events, published with __keyspace@<db>__ prefix. </p>
+				<p># E Keyevent events, published with __keyevent@<db>__ prefix. </p>
+				<p># g Generic commands (non-type specific) like DEL, EXPIRE, RENAME, ... </p>
+				<p># $ String commands </p>
+				<p># l List commands </p>
+				<p># s Set commands </p>
+				<p># h Hash commands </p>
+				<p># z Sorted set commands </p>
+				<p># x Expired events (events generated every time a key expires) </p>
+				<p># e Evicted events (events generated when a key is evicted for maxmemory) </p>
+				<p># t Stream commands </p>
+				<p># m Key-miss events (Note: It is not included in the 'A' class) </p>
+				<p># A Alias for g$lshzxet, so that the "AKE" string means all the events </p>
+				<p># (Except key-miss events which are excluded from 'A' due to their </p>
+				<p># unique nature). </p>
+				<p># </p>
+				<p># The "notify-keyspace-events" takes as argument a string that is composed </p>
+				<p># of zero or multiple characters. The empty string means that notifications </p>
+				<p># are disabled. </p>
+				<p># </p>
+				<p># Example: to enable list and generic events, from the point of view of the </p>
+				<p># event name, use: </p>
+				<p># </p>
+				<p># notify-keyspace-events Elg </p>
+				<p># </p>
+				<p># Example 2: to get the stream of the expired keys subscribing to channel </p>
+				<p># name __keyevent@0__:expired use: </p>
+				<p># </p>
+				<p># notify-keyspace-events Ex </p>
+				<p># </p>
+				<p># By default all notifications are disabled because most users don't need </p>
+				<p># this feature and the feature has some overhead. Note that if you don't </p>
+				<p># specify at least one of K or E, no events will be delivered. </p>
+			</div>
+			<code>notify-keyspace-events "" </code>
+			<div class="anotation">
+				<p> </p>
+				<p>############################### GOPHER SERVER ################################# </p>
+				<p> </p>
+				<p># Redis contains an implementation of the Gopher protocol, as specified in </p>
+				<p># the RFC 1436 (https://www.ietf.org/rfc/rfc1436.txt). </p>
+				<p># </p>
+				<p># The Gopher protocol was very popular in the late '90s. It is an alternative </p>
+				<p># to the web, and the implementation both server and client side is so simple </p>
+				<p># that the Redis server has just 100 lines of code in order to implement this </p>
+				<p># support. </p>
+				<p># </p>
+				<p># What do you do with Gopher nowadays? Well Gopher never *really* died, and </p>
+				<p># lately there is a movement in order for the Gopher more hierarchical content </p>
+				<p># composed of just plain text documents to be resurrected. Some want a simpler </p>
+				<p># internet, others believe that the mainstream internet became too much </p>
+				<p># controlled, and it's cool to create an alternative space for people that </p>
+				<p># want a bit of fresh air. </p>
+				<p># </p>
+				<p># Anyway for the 10nth birthday of the Redis, we gave it the Gopher protocol </p>
+				<p># as a gift. </p>
+				<p># </p>
+				<p># --- HOW IT WORKS? --- </p>
+				<p># </p>
+				<p># The Redis Gopher support uses the inline protocol of Redis, and specifically </p>
+				<p># two kind of inline requests that were anyway illegal: an empty request </p>
+				<p># or any request that starts with "/" (there are no Redis commands starting </p>
+				<p># with such a slash). Normal RESP2/RESP3 requests are completely out of the </p>
+				<p># path of the Gopher protocol implementation and are served as usually as well. </p>
+				<p># </p>
+				<p># If you open a connection to Redis when Gopher is enabled and send it </p>
+				<p># a string like "/foo", if there is a key named "/foo" it is served via the </p>
+				<p># Gopher protocol. </p>
+				<p># </p>
+				<p># In order to create a real Gopher "hole" (the name of a Gopher site in Gopher </p>
+				<p># talking), you likely need a script like the following: </p>
+				<p># </p>
+				<p># https://github.com/antirez/gopher2redis </p>
+				<p># </p>
+				<p># --- SECURITY WARNING --- </p>
+				<p># </p>
+				<p># If you plan to put Redis on the internet in a publicly accessible address </p>
+				<p># to server Gopher pages MAKE SURE TO SET A PASSWORD to the instance. </p>
+				<p># Once a password is set: </p>
+				<p># </p>
+				<p># 1. The Gopher server (when enabled, not by default) will still serve </p>
+				<p># content via Gopher. </p>
+				<p># 2. However other commands cannot be called before the client will </p>
+				<p># authenticate. </p>
+				<p># </p>
+				<p># So use the 'requirepass' option to protect your instance. </p>
+				<p># </p>
+				<p># To enable Gopher support uncomment the following line and set </p>
+				<p># the option from no (the default) to yes. </p>
+				<p># </p>
+			</div>
+			<code># gopher-enabled no </code>
+			<div class="anotation">
+				<p> </p>
+				<p>############################### ADVANCED CONFIG ############################### </p>
+				<p> </p>
+				<p># Hashes are encoded using a memory efficient data structure when they have a </p>
+				<p># small number of entries, and the biggest entry does not exceed a given </p>
+				<p># threshold. These thresholds can be configured using the following directives. </p>
+			</div>
+			<code>hash-max-ziplist-entries 512 </code>
+			<code>hash-max-ziplist-value 64 </code>
+			<div class="anotation">
+				<p> </p>
+				<p># Lists are also encoded in a special way to save a lot of space. </p>
+				<p># The number of entries allowed per internal list node can be specified </p>
+				<p># as a fixed maximum size or a maximum number of elements. </p>
+				<p># For a fixed maximum size, use -5 through -1, meaning: </p>
+				<p># -5: max size: 64 Kb <-- not recommended for normal workloads </p> <p># -4: max size: 32 Kb <-- not recommended
+						 </p> <p># -3: max size: 16 Kb <-- probably not recommended </p> <p># -2: max size: 8 Kb <-- good </p> <p># -1:
+									max size: 4 Kb <-- good </p> <p># Positive numbers mean store up to _exactly_ that number of elements </p>
+				<p># per list node. </p>
+				<p># The highest performing option is usually -2 (8 Kb size) or -1 (4 Kb size), </p>
+				<p># but if your use case is unique, adjust the settings as necessary. </p>
+			</div>
+			<code>list-max-ziplist-size -2 </code>
+			<div class="anotation">
+				<p> </p>
+				<p># Lists may also be compressed. </p>
+				<p># Compress depth is the number of quicklist ziplist nodes from *each* side of </p>
+				<p># the list to *exclude* from compression. The head and tail of the list </p>
+				<p># are always uncompressed for fast push/pop operations. Settings are: </p>
+				<p># 0: disable all list compression </p>
+				<p># 1: depth 1 means "don't start compressing until after 1 node into the list, </p>
+				<p># going from either the head or tail" </p>
+				<p># So: [head]->node->node->...->node->[tail] </p>
+				<p># [head], [tail] will always be uncompressed; inner nodes will compress. </p>
+				<p># 2: [head]->[next]->node->node->...->node->[prev]->[tail] </p>
+				<p># 2 here means: don't compress head or head->next or tail->prev or tail, </p>
+				<p># but compress all nodes between them. </p>
+				<p># 3: [head]->[next]->[next]->node->node->...->node->[prev]->[prev]->[tail] </p>
+				<p># etc. </p>
+			</div>
+			<code>list-compress-depth 0 </code>
+			<div class="anotation">
+				<p> </p>
+				<p># Sets have a special encoding in just one case: when a set is composed </p>
+				<p># of just strings that happen to be integers in radix 10 in the range </p>
+				<p># of 64 bit signed integers. </p>
+				<p># The following configuration setting sets the limit in the size of the </p>
+				<p># set in order to use this special memory saving encoding. </p>
+			</div>
+			<code>set-max-intset-entries 512 </code>
+			<div class="anotation">
+				<p> </p>
+				<p># Similarly to hashes and lists, sorted sets are also specially encoded in </p>
+				<p># order to save a lot of space. This encoding is only used when the length and </p>
+				<p># elements of a sorted set are below the following limits: </p>
+			</div>
+			<code>zset-max-ziplist-entries 128 </code>
+			<code>zset-max-ziplist-value 64 </code>
+			<div class="anotation">
+				<p> </p>
+				<p># HyperLogLog sparse representation bytes limit. The limit includes the </p>
+				<p># 16 bytes header. When an HyperLogLog using the sparse representation crosses </p>
+				<p># this limit, it is converted into the dense representation. </p>
+				<p># </p>
+				<p># A value greater than 16000 is totally useless, since at that point the </p>
+				<p># dense representation is more memory efficient. </p>
+				<p># </p>
+				<p># The suggested value is ~ 3000 in order to have the benefits of </p>
+				<p># the space efficient encoding without slowing down too much PFADD, </p>
+				<p># which is O(N) with the sparse encoding. The value can be raised to </p>
+				<p># ~ 10000 when CPU is not a concern, but space is, and the data set is </p>
+				<p># composed of many HyperLogLogs with cardinality in the 0 - 15000 range. </p>
+			</div>
+			<code>hll-sparse-max-bytes 3000 </code>
+			<div class="anotation">
+				<p> </p>
+				<p># Streams macro node max size / items. The stream data structure is a radix </p>
+				<p># tree of big nodes that encode multiple items inside. Using this configuration </p>
+				<p># it is possible to configure how big a single node can be in bytes, and the </p>
+				<p># maximum number of items it may contain before switching to a new node when </p>
+				<p># appending new stream entries. If any of the following settings are set to </p>
+				<p># zero, the limit is ignored, so for instance it is possible to set just a </p>
+				<p># max entires limit by setting max-bytes to 0 and max-entries to the desired </p>
+				<p># value. </p>
+			</div>
+			<code>stream-node-max-bytes 4096 </code>
+			<code>stream-node-max-entries 100 </code>
+			<div class="anotation">
+				<p> </p>
+				<p># Active rehashing uses 1 millisecond every 100 milliseconds of CPU time in </p>
+				<p># order to help rehashing the main Redis hash table (the one mapping top-level </p>
+				<p># keys to values). The hash table implementation Redis uses (see dict.c) </p>
+				<p># performs a lazy rehashing: the more operation you run into a hash table </p>
+				<p># that is rehashing, the more rehashing "steps" are performed, so if the </p>
+				<p># server is idle the rehashing is never complete and some more memory is used </p>
+				<p># by the hash table. </p>
+				<p># </p>
+				<p># The default is to use this millisecond 10 times every second in order to </p>
+				<p># actively rehash the main dictionaries, freeing memory when possible. </p>
+				<p># </p>
+				<p># If unsure: </p>
+				<p># use "activerehashing no" if you have hard latency requirements and it is </p>
+				<p># not a good thing in your environment that Redis can reply from time to time </p>
+				<p># to queries with 2 milliseconds delay. </p>
+				<p># </p>
+				<p># use "activerehashing yes" if you don't have such hard requirements but </p>
+				<p># want to free memory asap when possible. </p>
+			</div>
+			<code>activerehashing yes </code>
+			<div class="anotation">
+				<p> </p>
+				<p># The client output buffer limits can be used to force disconnection of clients </p>
+				<p># that are not reading data from the server fast enough for some reason (a </p>
+				<p># common reason is that a Pub/Sub client can't consume messages as fast as the </p>
+				<p># publisher can produce them). </p>
+				<p># </p>
+				<p># The limit can be set differently for the three different classes of clients: </p>
+				<p># </p>
+				<p># normal -> normal clients including MONITOR clients </p>
+				<p># replica -> replica clients </p>
+				<p># pubsub -> clients subscribed to at least one pubsub channel or pattern </p>
+				<p># </p>
+				<p># The syntax of every client-output-buffer-limit directive is the following: </p>
+				<p># </p>
+				<p># client-output-buffer-limit <class>
+						<hard limit>
+							<soft limit>
+								<soft seconds>
+				</p>
+				<p># </p>
+				<p># A client is immediately disconnected once the hard limit is reached, or if </p>
+				<p># the soft limit is reached and remains reached for the specified number of </p>
+				<p># seconds (continuously). </p>
+				<p># So for instance if the hard limit is 32 megabytes and the soft limit is </p>
+				<p># 16 megabytes / 10 seconds, the client will get disconnected immediately </p>
+				<p># if the size of the output buffers reach 32 megabytes, but will also get </p>
+				<p># disconnected if the client reaches 16 megabytes and continuously overcomes </p>
+				<p># the limit for 10 seconds. </p>
+				<p># </p>
+				<p># By default normal clients are not limited because they don't receive data </p>
+				<p># without asking (in a push way), but just after a request, so only </p>
+				<p># asynchronous clients may create a scenario where data is requested faster </p>
+				<p># than it can read. </p>
+				<p># </p>
+				<p># Instead there is a default limit for pubsub and replica clients, since </p>
+				<p># subscribers and replicas receive data in a push fashion. </p>
+				<p># </p>
+				<p># Both the hard or the soft limit can be disabled by setting them to zero. </p>
+			</div>
+			<code>client-output-buffer-limit normal 0 0 0 </code>
+			<code>client-output-buffer-limit replica 256mb 64mb 60 </code>
+			<code>client-output-buffer-limit pubsub 32mb 8mb 60 </code>
+			<div class="anotation">
+				<p> </p>
+				<p># Client query buffers accumulate new commands. They are limited to a fixed </p>
+				<p># amount by default in order to avoid that a protocol desynchronization (for </p>
+				<p># instance due to a bug in the client) will lead to unbound memory usage in </p>
+				<p># the query buffer. However you can configure it here if you have very special </p>
+				<p># needs, such us huge multi/exec requests or alike. </p>
+				<p># </p>
+			</div>
+			<code># client-query-buffer-limit 1gb </code>
+			<div class="anotation">
+				<p> </p>
+				<p># In the Redis protocol, bulk requests, that are, elements representing single </p>
+				<p># strings, are normally limited ot 512 mb. However you can change this limit </p>
+				<p># here. </p>
+				<p># </p>
+			</div>
+			<code># proto-max-bulk-len 512mb </code>
+			<div class="anotation">
+				<p> </p>
+				<p># Redis calls an internal function to perform many background tasks, like </p>
+				<p># closing connections of clients in timeout, purging expired keys that are </p>
+				<p># never requested, and so forth. </p>
+				<p># </p>
+				<p># Not all tasks are performed with the same frequency, but Redis checks for </p>
+				<p># tasks to perform according to the specified "hz" value. </p>
+				<p># </p>
+				<p># By default "hz" is set to 10. Raising the value will use more CPU when </p>
+				<p># Redis is idle, but at the same time will make Redis more responsive when </p>
+				<p># there are many keys expiring at the same time, and timeouts may be </p>
+				<p># handled with more precision. </p>
+				<p># </p>
+				<p># The range is between 1 and 500, however a value over 100 is usually not </p>
+				<p># a good idea. Most users should use the default of 10 and raise this up to </p>
+				<p># 100 only in environments where very low latency is required. </p>
+			</div>
+			<code>hz 10 </code>
+			<div class="anotation">
+				<p> </p>
+				<p># Normally it is useful to have an HZ value which is proportional to the </p>
+				<p># number of clients connected. This is useful in order, for instance, to </p>
+				<p># avoid too many clients are processed for each background task invocation </p>
+				<p># in order to avoid latency spikes. </p>
+				<p># </p>
+				<p># Since the default HZ value by default is conservatively set to 10, Redis </p>
+				<p># offers, and enables by default, the ability to use an adaptive HZ value </p>
+				<p># which will temporary raise when there are many connected clients. </p>
+				<p># </p>
+				<p># When dynamic HZ is enabled, the actual configured HZ will be used </p>
+				<p># as a baseline, but multiples of the configured HZ value will be actually </p>
+				<p># used as needed once more clients are connected. In this way an idle </p>
+				<p># instance will use very little CPU time while a busy instance will be </p>
+				<p># more responsive. </p>
+			</div>
+			<code>dynamic-hz yes </code>
+			<div class="anotation">
+				<p> </p>
+				<p># When a child rewrites the AOF file, if the following option is enabled </p>
+				<p># the file will be fsync-ed every 32 MB of data generated. This is useful </p>
+				<p># in order to commit the file to the disk more incrementally and avoid </p>
+				<p># big latency spikes. </p>
+			</div>
+			<code>aof-rewrite-incremental-fsync yes </code>
+			<div class="anotation">
+				<p> </p>
+				<p># When redis saves RDB file, if the following option is enabled </p>
+				<p># the file will be fsync-ed every 32 MB of data generated. This is useful </p>
+				<p># in order to commit the file to the disk more incrementally and avoid </p>
+				<p># big latency spikes. </p>
+			</div>
+			<code>rdb-save-incremental-fsync yes </code>
+			<div class="anotation">
+				<p> </p>
+				<p># Redis LFU eviction (see maxmemory setting) can be tuned. However it is a good </p>
+				<p># idea to start with the default settings and only change them after investigating </p>
+				<p># how to improve the performances and how the keys LFU change over time, which </p>
+				<p># is possible to inspect via the OBJECT FREQ command. </p>
+				<p># </p>
+				<p># There are two tunable parameters in the Redis LFU implementation: the </p>
+				<p># counter logarithm factor and the counter decay time. It is important to </p>
+				<p># understand what the two parameters mean before changing them. </p>
+				<p># </p>
+				<p># The LFU counter is just 8 bits per key, it's maximum value is 255, so Redis </p>
+				<p># uses a probabilistic increment with logarithmic behavior. Given the value </p>
+				<p># of the old counter, when a key is accessed, the counter is incremented in </p>
+				<p># this way: </p>
+				<p># </p>
+				<p># 1. A random number R between 0 and 1 is extracted. </p>
+				<p># 2. A probability P is calculated as 1/(old_value*lfu_log_factor+1). </p>
+				<p># 3. The counter is incremented only if R < P. </p> <p># </p>
+				<p># The default lfu-log-factor is 10. This is a table of how the frequency </p>
+				<p># counter changes with a different number of accesses with different </p>
+				<p># logarithmic factors: </p>
+				<p># </p>
+				<p># +--------+------------+------------+------------+------------+------------+ </p>
+				<p># | factor | 100 hits | 1000 hits | 100K hits | 1M hits | 10M hits | </p>
+				<p># +--------+------------+------------+------------+------------+------------+ </p>
+				<p># | 0 | 104 | 255 | 255 | 255 | 255 | </p>
+				<p># +--------+------------+------------+------------+------------+------------+ </p>
+				<p># | 1 | 18 | 49 | 255 | 255 | 255 | </p>
+				<p># +--------+------------+------------+------------+------------+------------+ </p>
+				<p># | 10 | 10 | 18 | 142 | 255 | 255 | </p>
+				<p># +--------+------------+------------+------------+------------+------------+ </p>
+				<p># | 100 | 8 | 11 | 49 | 143 | 255 | </p>
+				<p># +--------+------------+------------+------------+------------+------------+ </p>
+				<p># </p>
+				<p># NOTE: The above table was obtained by running the following commands: </p>
+				<p># </p>
+				<p># redis-benchmark -n 1000000 incr foo </p>
+				<p># redis-cli object freq foo </p>
+				<p># </p>
+				<p># NOTE 2: The counter initial value is 5 in order to give new objects a chance </p>
+				<p># to accumulate hits. </p>
+				<p># </p>
+				<p># The counter decay time is the time, in minutes, that must elapse in order </p>
+				<p># for the key counter to be divided by two (or decremented if it has a value </p>
+				<p># less <= 10). </p> <p># </p>
+				<p># The default value for the lfu-decay-time is 1. A Special value of 0 means to </p>
+				<p># decay the counter every time it happens to be scanned. </p>
+				<p># </p>
+			</div>
+			<code># lfu-log-factor 10 </code>
+			<code># lfu-decay-time 1 </code>
+			<div class="anotation">
+				<p> </p>
+				<p>########################### ACTIVE DEFRAGMENTATION ####################### </p>
+				<p># </p>
+				<p># What is active defragmentation? </p>
+				<p># ------------------------------- </p>
+				<p># </p>
+				<p># Active (online) defragmentation allows a Redis server to compact the </p>
+				<p># spaces left between small allocations and deallocations of data in memory, </p>
+				<p># thus allowing to reclaim back memory. </p>
+				<p># </p>
+				<p># Fragmentation is a natural process that happens with every allocator (but </p>
+				<p># less so with Jemalloc, fortunately) and certain workloads. Normally a server </p>
+				<p># restart is needed in order to lower the fragmentation, or at least to flush </p>
+				<p># away all the data and create it again. However thanks to this feature </p>
+				<p># implemented by Oran Agra for Redis 4.0 this process can happen at runtime </p>
+				<p># in an "hot" way, while the server is running. </p>
+				<p># </p>
+				<p># Basically when the fragmentation is over a certain level (see the </p>
+				<p># configuration options below) Redis will start to create new copies of the </p>
+				<p># values in contiguous memory regions by exploiting certain specific Jemalloc </p>
+				<p># features (in order to understand if an allocation is causing fragmentation </p>
+				<p># and to allocate it in a better place), and at the same time, will release the </p>
+				<p># old copies of the data. This process, repeated incrementally for all the keys </p>
+				<p># will cause the fragmentation to drop back to normal values. </p>
+				<p># </p>
+				<p># Important things to understand: </p>
+				<p># </p>
+				<p># 1. This feature is disabled by default, and only works if you compiled Redis </p>
+				<p># to use the copy of Jemalloc we ship with the source code of Redis. </p>
+				<p># This is the default with Linux builds. </p>
+				<p># </p>
+				<p># 2. You never need to enable this feature if you don't have fragmentation </p>
+				<p># issues. </p>
+				<p># </p>
+				<p># 3. Once you experience fragmentation, you can enable this feature when </p>
+				<p># needed with the command "CONFIG SET activedefrag yes". </p>
+				<p># </p>
+				<p># The configuration parameters are able to fine tune the behavior of the </p>
+				<p># defragmentation process. If you are not sure about what they mean it is </p>
+				<p># a good idea to leave the defaults untouched. </p>
+				<p> </p>
+				<p># Enabled active defragmentation </p>
+			</div>
+			<code># activedefrag no </code>
+			<div class="anotation">
+				<p> </p>
+				<p># Minimum amount of fragmentation waste to start active defrag </p>
+			</div>
+			<code># active-defrag-ignore-bytes 100mb </code>
+			<div class="anotation">
+				<p> </p>
+				<p># Minimum percentage of fragmentation to start active defrag </p>
+			</div>
+			<code># active-defrag-threshold-lower 10 </code>
+			<div class="anotation">
+				<p> </p>
+				<p># Maximum percentage of fragmentation at which we use maximum effort </p>
+			</div>
+			<code># active-defrag-threshold-upper 100 </code>
+			<div class="anotation">
+				<p> </p>
+				<p># Minimal effort for defrag in CPU percentage, to be used when the lower </p>
+				<p># threshold is reached </p>
+			</div>
+			<code># active-defrag-cycle-min 1 </code>
+			<div class="anotation">
+				<p> </p>
+				<p># Maximal effort for defrag in CPU percentage, to be used when the upper </p>
+				<p># threshold is reached </p>
+			</div>
+			<code># active-defrag-cycle-max 25 </code>
+			<div class="anotation">
+				<p> </p>
+				<p># Maximum number of set/hash/zset/list fields that will be processed from </p>
+				<p># the main dictionary scan </p>
+			</div>
+			<code># active-defrag-max-scan-fields 1000 </code>
+			<div class="anotation">
+				<p> </p>
+				<p># Jemalloc background thread for purging will be enabled by default </p>
+			</div>
+			<code>jemalloc-bg-thread yes </code>
+			<div class="anotation">
+				<p> </p>
+				<p># It is possible to pin different threads and processes of Redis to specific </p>
+				<p># CPUs in your system, in order to maximize the performances of the server. </p>
+				<p># This is useful both in order to pin different Redis threads in different </p>
+				<p># CPUs, but also in order to make sure that multiple Redis instances running </p>
+				<p># in the same host will be pinned to different CPUs. </p>
+				<p># </p>
+				<p># Normally you can do this using the "taskset" command, however it is also </p>
+				<p># possible to this via Redis configuration directly, both in Linux and FreeBSD. </p>
+				<p># </p>
+				<p># You can pin the server/IO threads, bio threads, aof rewrite child process, and </p>
+				<p># the bgsave child process. The syntax to specify the cpu list is the same as </p>
+				<p># the taskset command: </p>
+				<p># </p>
+				<p># Set redis server/io threads to cpu affinity 0,2,4,6: </p>
+			</div>
+			<code># server_cpulist 0-7:2 </code>
+			<div class="anotation">
+				<p># </p>
+				<p># Set bio threads to cpu affinity 1,3: </p>
+			</div>
+			<code># bio_cpulist 1,3 </code>
+			<div class="anotation">
+				<p># </p>
+				<p># Set aof rewrite child process to cpu affinity 8,9,10,11: </p>
+			</div>
+			<code># aof_rewrite_cpulist 8-11 </code>
+			<div class="anotation">
+				<p># </p>
+				<p># Set bgsave child process to cpu affinity 1,10,11 </p>
+			</div>
+			<code># bgsave_cpulist 1,10-11 </code>
+
+		</div>
+	</body>
+	<script>
+		var e = document.createEvent("MouseEvents");
+		e.initEvent("click", true, true);
+		for (var ano of document.getElementsByClassName('anotation')) {
+			ano.onclick = function() {
+				var hideFlag = false;
+				if ('none' != this.children[0].style.display) {
+					hideFlag = true;
+				}
+				if (hideFlag) {
+					var btnNode = document.createElement('div');
+					btnNode.innerHTML = '/** ... */';
+					this.appendChild(btnNode);
+				} else {
+					this.removeChild(this.getElementsByTagName('div')[0]);
+				}
+				for (var pNode of this.children) {
+					if ('DIV' != pNode.tagName) {
+						if (hideFlag) {
+							pNode.style.display = 'none';
+						} else {
+							pNode.style.display = '';
+						}
+					}
+				}
+			}
+			ano.dispatchEvent(e);
+		}
+	</script>
+</html>
